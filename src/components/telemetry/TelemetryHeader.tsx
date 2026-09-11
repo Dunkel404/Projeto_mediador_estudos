@@ -2,9 +2,17 @@
 
 import React, { useState } from 'react';
 import { useAppStore } from '@/lib/store';
-import { Activity, Cpu, ShieldAlert, Sparkles, ExternalLink, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Activity, Cpu, ShieldAlert, Sparkles, ExternalLink, CheckCircle2, ShieldCheck, Maximize2 } from 'lucide-react';
 
-export const TelemetryHeader: React.FC = () => {
+interface TelemetryHeaderProps {
+  isFocusMode?: boolean;
+  onToggleFocusMode?: () => void;
+}
+
+export const TelemetryHeader: React.FC<TelemetryHeaderProps> = ({
+  isFocusMode = false,
+  onToggleFocusMode,
+}) => {
   const { progressMap } = useAppStore();
   const [showGuideModal, setShowGuideModal] = useState<boolean>(false);
 
@@ -53,10 +61,28 @@ export const TelemetryHeader: React.FC = () => {
           </div>
         )}
 
+        {/* Focus Mode Toggle */}
+        {onToggleFocusMode && (
+          <button
+            onClick={onToggleFocusMode}
+            className={`flex items-center gap-1.5 px-2.5 py-1 border text-[11px] transition-colors cursor-pointer ${
+              isFocusMode
+                ? 'border-[#ffb000] text-[#ffb000] bg-[#ffb000]/15'
+                : 'border-[#242933] text-slate-300 hover:text-white bg-[#12141a] hover:bg-[#181b22]'
+            }`}
+            title={isFocusMode ? 'Desativar Modo Foco (Expandir Grafo 2D)' : 'Ativar Modo Foco (Trilha compacta)'}
+          >
+            <Maximize2 className="w-3.5 h-3.5 text-[#ffb000]" />
+            <span className="hidden md:inline">
+              {isFocusMode ? 'MODO FOCO: ATIVO' : 'MODO FOCO'}
+            </span>
+          </button>
+        )}
+
         {/* Gemini Web Bridge Status Button */}
         <button
           onClick={() => setShowGuideModal(true)}
-          className="flex items-center gap-1.5 px-2.5 py-1 border border-[#00f0ff]/40 text-[#00f0ff] bg-[#00f0ff]/10 hover:bg-[#00f0ff]/20 text-[11px] transition-colors"
+          className="flex items-center gap-1.5 px-2.5 py-1 border border-[#00f0ff]/40 text-[#00f0ff] bg-[#00f0ff]/10 hover:bg-[#00f0ff]/20 text-[11px] transition-colors cursor-pointer"
           title="Ver fluxo de conexão com o Gemini via Conta Google"
         >
           <Sparkles className="w-3.5 h-3.5" />

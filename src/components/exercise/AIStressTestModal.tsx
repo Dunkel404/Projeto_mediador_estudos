@@ -27,12 +27,14 @@ interface AIStressTestModalProps {
   node: CurriculumNode;
   onClose: () => void;
   onOpenSandbox?: () => void;
+  onAssessmentLoaded?: (data: LessonAndAssessmentResponse) => void;
 }
 
 export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
   node,
   onClose,
   onOpenSandbox,
+  onAssessmentLoaded,
 }) => {
   const { progressMap, fsrsMap, recordExerciseAttempt } = useAppStore();
   const progress = progressMap[node.id];
@@ -129,6 +131,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
     setAssessment(data);
     setIsOfflineFallback(offline);
     setModalStage('exam');
+    onAssessmentLoaded?.(data);
 
     const limit = data.rubric_criteria.time_threshold_seconds || 90;
     setSecondsRemaining(limit);

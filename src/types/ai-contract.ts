@@ -24,6 +24,45 @@ export const InteractiveExerciseSchema = z.object({
   diagnostic_traps: z.array(DiagnosticTrapSchema),
 });
 
+export const BookOrPaperReferenceSchema = z.object({
+  title: z.string(),
+  author: z.string(),
+  year: z.string(),
+  description: z.string(),
+  url: z.string().optional(),
+});
+
+export const VideoReferenceSchema = z.object({
+  title: z.string(),
+  channel_or_speaker: z.string(),
+  key_takeaway: z.string(),
+  search_query_or_url: z.string(),
+});
+
+export const ProjectReferenceSchema = z.object({
+  name: z.string(),
+  repository_or_shadertoy: z.string(),
+  what_to_analyze: z.string(),
+});
+
+export const CuratedReferencesSchema = z.object({
+  papers_and_books: z.array(BookOrPaperReferenceSchema).default([]),
+  videos_and_talks: z.array(VideoReferenceSchema).default([]),
+  code_and_projects: z.array(ProjectReferenceSchema).default([]),
+});
+
+export const DidacticArticleSchema = z.object({
+  title: z.string(),
+  subtitle: z.string(),
+  read_time_minutes: z.number().default(6),
+  scientific_pedagogy_note: z.string(),
+  historical_context: z.string(),
+  geometric_intuition: z.string(),
+  mathematical_derivation_latex: z.array(z.string()).default([]),
+  graphics_engine_pipeline: z.string(),
+  curated_references: CuratedReferencesSchema,
+});
+
 export const LessonAndAssessmentSchema = z.object({
   session_id: z.string(),
   topic: z.object({
@@ -31,6 +70,7 @@ export const LessonAndAssessmentSchema = z.object({
     math_foundation: z.string(),
     graphic_application: z.string(),
   }),
+  didactic_article: DidacticArticleSchema.optional(),
   interactive_exercise: InteractiveExerciseSchema,
   shader_sandbox_payload: ShaderSandboxPayloadSchema.optional(),
   rubric_criteria: z.object({
@@ -40,6 +80,8 @@ export const LessonAndAssessmentSchema = z.object({
 });
 
 export type LessonAndAssessmentResponse = z.infer<typeof LessonAndAssessmentSchema>;
+export type DidacticArticle = z.infer<typeof DidacticArticleSchema>;
+export type CuratedReferences = z.infer<typeof CuratedReferencesSchema>;
 export type InteractiveExercise = z.infer<typeof InteractiveExerciseSchema>;
 export type DiagnosticTrap = z.infer<typeof DiagnosticTrapSchema>;
 

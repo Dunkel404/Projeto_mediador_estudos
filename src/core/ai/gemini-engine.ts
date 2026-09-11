@@ -1,4 +1,3 @@
-import { GoogleGenAI } from '@google/genai';
 import {
   ZeroContextPromptPayload,
   LessonAndAssessmentSchema,
@@ -7,14 +6,20 @@ import {
 import { getOfflineAssessment } from './offline-bank';
 
 export class GeminiTelemetryEngine {
-  private apiKey: string;
+  private oauthToken: string | null = null;
+  private tokenExpiresAt: number | null = null;
 
-  constructor(apiKey: string = '') {
-    this.apiKey = apiKey;
+  constructor() {}
+
+  public setOAuthToken(token: string | null, expiresAt: number | null = null) {
+    this.oauthToken = token;
+    this.tokenExpiresAt = expiresAt;
   }
 
-  public setApiKey(key: string) {
-    this.apiKey = key;
+  public isTokenValid(): boolean {
+    if (!this.oauthToken) return false;
+    if (this.tokenExpiresAt && Date.now() >= this.tokenExpiresAt) return false;
+    return true;
   }
 
   /**
@@ -63,14 +68,14 @@ Sua resposta deve ser EXCLUSIVAMENTE um objeto JSON válido correspondente ao se
   }
 
   /**
-   * Gera a avaliação via Gemini com fallback offline automático
+   * Gera a avaliação via Gemini com autenticação OAuth 2.0 (Bearer Token)
    */
   public async generateAssessment(
     payload: ZeroContextPromptPayload
   ): Promise<{ data: LessonAndAssessmentResponse; isOfflineFallback: boolean; error?: string }> {
     const nodeId = payload.user_profile.node_id;
 
-    if (!this.apiKey || typeof window === 'undefined' || !navigator.onLine) {
+    if (!this.isTokenValid() || typeof window === 'undefined' || !navigator.onLine) {
       return {
         data: getOfflineAssessment(nodeId),
         isOfflineFallback: true,
@@ -78,19 +83,41 @@ Sua resposta deve ser EXCLUSIVAMENTE um objeto JSON válido correspondente ao se
     }
 
     try {
-      const ai = new GoogleGenAI({ apiKey: this.apiKey });
       const prompt = this.buildZeroContextPrompt(payload);
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
+      const endpoint =
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.oauthToken}`,
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [{ text: prompt }],
+            },
+          ],
+          generationConfig: {
+            responseMimeType: 'application/json',
+          },
+        }),
       });
 
-      const text = response.text || '';
-      const parsedJson = JSON.parse(text);
+      if (!response.ok) {
+        const errJson = await response.json().catch(() => null);
+        throw new Error(
+          `Falha na requisição Gemini OAuth (${response.status}): ${
+            errJson?.error?.message || response.statusText
+          }`
+        );
+      }
+
+      const resData = await response.json();
+      const rawText = resData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      const parsedJson = JSON.parse(rawText);
       const validated = LessonAndAssessmentSchema.parse(parsedJson);
 
       return {
@@ -98,11 +125,11 @@ Sua resposta deve ser EXCLUSIVAMENTE um objeto JSON válido correspondente ao se
         isOfflineFallback: false,
       };
     } catch (err: any) {
-      console.warn('Gemini API call failed, falling back to deterministic offline bank:', err);
+      console.warn('Gemini OAuth request failed, falling back to deterministic offline bank:', err);
       return {
         data: getOfflineAssessment(nodeId),
         isOfflineFallback: true,
-        error: err.message || 'Falha na resposta da API Gemini',
+        error: err.message || 'Falha na autenticação ou conexão Gemini OAuth',
       };
     }
   }

@@ -4,6 +4,8 @@ import { CURRICULUM_NODES } from '@/core/curriculum/nodes';
 import { CurriculumNode, UserNodeProgress, ProficiencyLevel, ResponseSpeed } from '@/types/curriculum';
 import { FSRSCard } from '@/types/fsrs';
 import { fsrs } from '@/core/fsrs/fsrs';
+import { geminiEngine } from '@/core/ai/gemini-engine';
+import { GoogleUserProfile } from './oauth';
 
 interface AppStore {
   nodes: CurriculumNode[];
@@ -11,12 +13,24 @@ interface AppStore {
   fsrsMap: Record<string, FSRSCard>;
   activeNodeId: string | null;
   isLoading: boolean;
-  apiKey: string;
+
+  // OAuth 2.0 State
+  oauthToken: string | null;
+  oauthExpiresAt: number | null;
+  oauthClientId: string;
+  googleUser: GoogleUserProfile | null;
 
   // Actions
   initializeData: () => Promise<void>;
   setActiveNodeId: (id: string | null) => void;
-  setApiKey: (key: string) => Promise<void>;
+  setOAuthClientId: (clientId: string) => Promise<void>;
+  setOAuthSession: (params: {
+    token: string;
+    expiresIn: number;
+    user?: GoogleUserProfile;
+    clientId?: string;
+  }) => Promise<void>;
+  clearOAuthSession: () => Promise<void>;
   recordExerciseAttempt: (params: {
     nodeId: string;
     scoreKnowledge: number;
@@ -35,14 +49,37 @@ export const useAppStore = create<AppStore>((set, get) => ({
   fsrsMap: {},
   activeNodeId: null,
   isLoading: true,
-  apiKey: '',
+
+  oauthToken: null,
+  oauthExpiresAt: null,
+  oauthClientId: '',
+  googleUser: null,
 
   initializeData: async () => {
     try {
       // Load nodes from DB
       const dbProgress = await db.userNodes.toArray();
       const dbCards = await db.fsrsCards.toArray();
-      const apiKeySetting = await db.settings.get('gemini_api_key');
+
+      // Load OAuth settings from DB
+      const storedToken = await db.settings.get('oauth_access_token');
+      const storedExpiry = await db.settings.get('oauth_expires_at');
+      const storedClientId = await db.settings.get('oauth_client_id');
+      const storedUser = await db.settings.get('oauth_user_profile');
+
+      let parsedUser: GoogleUserProfile | null = null;
+      if (storedUser) {
+        try {
+          parsedUser = JSON.parse(storedUser.value);
+        } catch {}
+      }
+
+      const tokenVal = storedToken ? storedToken.value : null;
+      const expiryVal = storedExpiry ? parseInt(storedExpiry.value, 10) : null;
+      const clientIdVal = storedClientId ? storedClientId.value : '';
+
+      // Configure Gemini engine with loaded OAuth token
+      geminiEngine.setOAuthToken(tokenVal, expiryVal);
 
       const progressMap: Record<string, UserNodeProgress> = {};
       const fsrsMap: Record<string, FSRSCard> = {};
@@ -50,7 +87,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
       for (const p of dbProgress) progressMap[p.nodeId] = p;
       for (const c of dbCards) fsrsMap[c.nodeId] = c;
 
-      // Check if nodes are seeded in DB; if not, initialize root nodes as 'available'
+      // Seed initial nodes in DB if not present
       for (const node of CURRICULUM_NODES) {
         if (!progressMap[node.id]) {
           const isInitialAvailable = node.prerequisites.length === 0;
@@ -88,7 +125,10 @@ export const useAppStore = create<AppStore>((set, get) => ({
       set({
         progressMap,
         fsrsMap,
-        apiKey: apiKeySetting ? apiKeySetting.value : '',
+        oauthToken: tokenVal,
+        oauthExpiresAt: expiryVal,
+        oauthClientId: clientIdVal,
+        googleUser: parsedUser,
         isLoading: false,
       });
     } catch (err) {
@@ -99,9 +139,47 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
   setActiveNodeId: (id) => set({ activeNodeId: id }),
 
-  setApiKey: async (key: string) => {
-    await db.settings.put({ key: 'gemini_api_key', value: key });
-    set({ apiKey: key });
+  setOAuthClientId: async (clientId: string) => {
+    await db.settings.put({ key: 'oauth_client_id', value: clientId });
+    set({ oauthClientId: clientId });
+  },
+
+  setOAuthSession: async ({ token, expiresIn, user, clientId }) => {
+    const expiresAt = Date.now() + expiresIn * 1000;
+
+    await db.settings.put({ key: 'oauth_access_token', value: token });
+    await db.settings.put({ key: 'oauth_expires_at', value: expiresAt.toString() });
+
+    if (clientId) {
+      await db.settings.put({ key: 'oauth_client_id', value: clientId });
+    }
+
+    if (user) {
+      await db.settings.put({ key: 'oauth_user_profile', value: JSON.stringify(user) });
+    }
+
+    geminiEngine.setOAuthToken(token, expiresAt);
+
+    set({
+      oauthToken: token,
+      oauthExpiresAt: expiresAt,
+      googleUser: user || null,
+      ...(clientId ? { oauthClientId: clientId } : {}),
+    });
+  },
+
+  clearOAuthSession: async () => {
+    await db.settings.delete('oauth_access_token');
+    await db.settings.delete('oauth_expires_at');
+    await db.settings.delete('oauth_user_profile');
+
+    geminiEngine.setOAuthToken(null, null);
+
+    set({
+      oauthToken: null,
+      oauthExpiresAt: null,
+      googleUser: null,
+    });
   },
 
   recordExerciseAttempt: async ({

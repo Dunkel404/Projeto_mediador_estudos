@@ -20,7 +20,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
   onClose,
   onOpenSandbox,
 }) => {
-  const { progressMap, fsrsMap, apiKey, recordExerciseAttempt } = useAppStore();
+  const { progressMap, fsrsMap, oauthToken, oauthExpiresAt, recordExerciseAttempt } = useAppStore();
   const progress = progressMap[node.id];
   const card = fsrsMap[node.id];
 
@@ -34,7 +34,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    geminiEngine.setApiKey(apiKey);
+    geminiEngine.setOAuthToken(oauthToken, oauthExpiresAt);
 
     const loadAssessment = async () => {
       setIsLoading(true);
@@ -95,7 +95,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [apiKey, card, node.id, node.title, progress]);
+  }, [oauthToken, oauthExpiresAt, card, node.id, node.title, progress]);
 
   const handleInputChange = (varName: string, val: string) => {
     setUserAnswers((prev) => ({ ...prev, [varName]: val }));
@@ -147,7 +147,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
               </span>
             ) : (
               <span className="text-[10px] px-1.5 py-0.5 bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/40">
-                GEMINI 2.5 REAL-TIME
+                GEMINI 2.5 (GOOGLE OAUTH)
               </span>
             )}
           </div>

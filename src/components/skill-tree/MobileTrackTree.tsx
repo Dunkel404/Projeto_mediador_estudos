@@ -12,11 +12,11 @@ interface MobileTrackTreeProps {
 }
 
 const TIER_NAMES: Record<Tier, { title: string; color: string; badgeBg: string }> = {
-  0: { title: 'Tier 0: Álgebra e Trigonometria Operacional', color: '#38bdf8', badgeBg: 'rgba(56, 189, 248, 0.15)' },
-  1: { title: 'Tier 1: Álgebra Linear e Transformações 3D', color: '#818cf8', badgeBg: 'rgba(129, 140, 248, 0.15)' },
-  2: { title: 'Tier 2: Cálculo Diferencial e SDFs', color: '#34d399', badgeBg: 'rgba(52, 211, 153, 0.15)' },
-  3: { title: 'Tier 3: Cálculo Integral e Radiometria Física', color: '#c084fc', badgeBg: 'rgba(192, 132, 252, 0.15)' },
-  4: { title: 'Tier 4: Campos Vetoriais e Tensores Básicos', color: '#fbbf24', badgeBg: 'rgba(251, 191, 36, 0.15)' },
+  0: { title: 'Tier 0: Álgebra e Trigonometria Operacional', color: '#f97316', badgeBg: 'rgba(249, 115, 22, 0.15)' },
+  1: { title: 'Tier 1: Álgebra Linear e Transformações 3D', color: '#f59e0b', badgeBg: 'rgba(245, 158, 11, 0.15)' },
+  2: { title: 'Tier 2: Cálculo Diferencial e SDFs', color: '#8b5cf6', badgeBg: 'rgba(139, 92, 246, 0.15)' },
+  3: { title: 'Tier 3: Cálculo Integral e Radiometria Física', color: '#ec4899', badgeBg: 'rgba(236, 72, 153, 0.15)' },
+  4: { title: 'Tier 4: Campos Vetoriais e Tensores Básicos', color: '#10b981', badgeBg: 'rgba(16, 185, 129, 0.15)' },
 };
 
 export const MobileTrackTree: React.FC<MobileTrackTreeProps> = ({
@@ -46,7 +46,7 @@ export const MobileTrackTree: React.FC<MobileTrackTreeProps> = ({
   }
 
   return (
-    <div className="w-full h-full overflow-y-auto p-4 space-y-4 bg-[#090b10] select-none">
+    <div className="w-full h-full overflow-y-auto p-4 space-y-4 bg-[#0b0d14] select-none">
       {([0, 1, 2, 3, 4] as Tier[]).map((tier) => {
         const tierNodes = tierGroups[tier] || [];
         const isExpanded = !!expandedTiers[tier];
@@ -101,11 +101,11 @@ export const MobileTrackTree: React.FC<MobileTrackTreeProps> = ({
                   const isActive = activeNodeId === node.id;
 
                   let borderStyle = 'border-white/5 hover:border-white/20';
-                  if (progress.status === 'mastered') borderStyle = 'border-emerald-500/30';
-                  else if (progress.status === 'critical_decay') borderStyle = 'border-amber-500/40';
-                  else if (progress.status === 'available') borderStyle = 'border-sky-500/30';
+                  if (progress.status === 'mastered') borderStyle = 'border-orange-500/40';
+                  else if (progress.status === 'critical_decay') borderStyle = 'border-rose-500/40';
+                  else if (progress.status === 'available') borderStyle = 'border-amber-500/30';
 
-                  if (isActive) borderStyle = 'border-sky-400 ring-2 ring-sky-400/30';
+                  if (isActive) borderStyle = 'border-orange-400 ring-2 ring-orange-400/30';
 
                   return (
                     <div
@@ -115,8 +115,8 @@ export const MobileTrackTree: React.FC<MobileTrackTreeProps> = ({
                       }}
                       className={`p-3.5 rounded-xl border transition-all ${borderStyle} ${
                         isLocked
-                          ? 'bg-[#0b0d13]/50 opacity-50 cursor-not-allowed'
-                          : 'bg-[#121622] hover:bg-[#181d2a] cursor-pointer'
+                          ? 'bg-[#0e1017]/50 opacity-50 cursor-not-allowed'
+                          : 'bg-[#141724] hover:bg-[#191d2d] cursor-pointer'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -136,13 +136,13 @@ export const MobileTrackTree: React.FC<MobileTrackTreeProps> = ({
                         <div className="shrink-0 pt-0.5">
                           {isLocked && <Lock className="w-4 h-4 text-slate-600" />}
                           {progress.status === 'available' && (
-                            <Sparkles className="w-4 h-4 text-sky-400" />
+                            <Sparkles className="w-4 h-4 text-amber-400" />
                           )}
                           {progress.status === 'critical_decay' && (
-                            <AlertTriangle className="w-4 h-4 text-amber-400 animate-pulse" />
+                            <AlertTriangle className="w-4 h-4 text-rose-400 animate-pulse" />
                           )}
                           {progress.status === 'mastered' && (
-                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                            <CheckCircle2 className="w-4 h-4 text-orange-400" />
                           )}
                         </div>
                       </div>
@@ -153,11 +153,11 @@ export const MobileTrackTree: React.FC<MobileTrackTreeProps> = ({
                           <div>
                             <div className="flex justify-between text-slate-400 mb-1">
                               <span>MATEMÁTICA</span>
-                              <span className="text-sky-300 font-bold">{progress.scoreKnowledge}/90</span>
+                              <span className="text-orange-300 font-bold">{progress.scoreKnowledge}/90</span>
                             </div>
                             <div className="w-full h-1.5 rounded-full bg-black/40 overflow-hidden">
                               <div
-                                className="h-full rounded-full bg-sky-400"
+                                className="h-full rounded-full bg-orange-400"
                                 style={{ width: `${(progress.scoreKnowledge / 90) * 100}%` }}
                               />
                             </div>

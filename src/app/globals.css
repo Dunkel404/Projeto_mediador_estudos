@@ -2,30 +2,31 @@
 
 @layer base {
   :root {
-    /* Refined Dark Theme System (Linear + Radix Slate + Vercel Geist) */
-    --color-canvas: #090b10;
-    --color-surface: #0f121a;
-    --color-surface-elevated: #151923;
-    --color-surface-hover: #1c2230;
+    /* Refined Dark Theme System (Duolingo Dark + Warm Obsidian + Radix Slate) */
+    --color-canvas: #0b0d14;
+    --color-surface: #121520;
+    --color-surface-elevated: #1a1e2d;
+    --color-surface-hover: #22273a;
     
     --color-border-subtle: rgba(255, 255, 255, 0.07);
     --color-border-default: rgba(255, 255, 255, 0.12);
     --color-border-strong: rgba(255, 255, 255, 0.20);
 
-    /* Dopaminergic Eye-Friendly Accent Palette (No Neon Glare) */
-    --color-accent-sky: #38bdf8;
-    --color-accent-sky-soft: rgba(56, 189, 248, 0.12);
-    --color-accent-emerald: #10b981;
-    --color-accent-emerald-soft: rgba(16, 185, 129, 0.12);
+    /* Duolingo Dopaminergic Warm Palette - Primary Orange (No Neon Glare) */
+    --color-accent-orange: #f97316;
+    --color-accent-orange-hover: #ea580c;
+    --color-accent-orange-soft: rgba(249, 115, 22, 0.12);
     --color-accent-amber: #f59e0b;
     --color-accent-amber-soft: rgba(245, 158, 11, 0.12);
+    --color-accent-emerald: #10b981;
+    --color-accent-emerald-soft: rgba(16, 185, 129, 0.12);
     --color-accent-rose: #f43f5e;
     --color-accent-rose-soft: rgba(244, 63, 94, 0.12);
     --color-accent-violet: #a855f7;
     --color-accent-violet-soft: rgba(168, 85, 247, 0.12);
 
     /* Text Hierarchy */
-    --text-primary: #f1f5f9;
+    --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --text-muted: #64748b;
   }
@@ -55,7 +56,7 @@
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(56, 189, 248, 0.4);
+  background: rgba(249, 115, 22, 0.5);
 }
 
 /* Subtle Ambient Dot/Grid Background */
@@ -65,8 +66,8 @@
 }
 
 .subtle-mesh {
-  background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.05) 0%, transparent 50%),
-              radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.03) 0%, transparent 40%);
+  background: radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.05) 0%, transparent 50%),
+              radial-gradient(circle at 100% 100%, rgba(245, 158, 11, 0.04) 0%, transparent 40%);
 }
 
 /* Monospace font helpers for telemetry */
@@ -78,8 +79,9 @@
 /* Tactile 3D Buttons (Duolingo Tactile Micro-Interactions) */
 .tactile-btn {
   position: relative;
-  border-radius: 0.75rem;
-  font-weight: 700;
+  border-radius: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.025em;
   transition: transform 0.08s ease-out, box-shadow 0.08s ease-out;
   cursor: pointer;
   user-select: none;
@@ -88,16 +90,16 @@
   transform: translateY(3px);
 }
 
-.tactile-btn-sky {
-  background-color: #0284c7;
+.tactile-btn-orange {
+  background-color: #f97316;
   color: #ffffff;
-  box-shadow: 0 4px 0 #0369a1, 0 6px 12px rgba(2, 132, 199, 0.25);
+  box-shadow: 0 4px 0 #c2410c, 0 6px 14px rgba(249, 115, 22, 0.35);
 }
-.tactile-btn-sky:hover {
-  background-color: #0369a1;
+.tactile-btn-orange:hover {
+  background-color: #ea580c;
 }
-.tactile-btn-sky:active {
-  box-shadow: 0 1px 0 #0369a1;
+.tactile-btn-orange:active {
+  box-shadow: 0 1px 0 #c2410c;
 }
 
 .tactile-btn-emerald {
@@ -125,17 +127,17 @@
 }
 
 .tactile-btn-neutral {
-  background-color: #1e2433;
+  background-color: #171b26;
   color: #e2e8f0;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 3px 0 #131722;
+  box-shadow: 0 3px 0 #0f121a;
 }
 .tactile-btn-neutral:hover {
-  background-color: #262d40;
+  background-color: #212636;
   color: #ffffff;
 }
 .tactile-btn-neutral:active {
-  box-shadow: 0 1px 0 #131722;
+  box-shadow: 0 1px 0 #0f121a;
 }
 
 /* Tactile 3D Duolingo Node Stone */

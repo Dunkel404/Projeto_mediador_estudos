@@ -212,7 +212,7 @@ export const StreakBadge: React.FC<StreakBadgeProps> = ({
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-slate-400 text-[11px]">Multiplicador FSRS:</span>
-                <span className="font-bold text-sky-400 text-sm">{multiplier.toFixed(1)}x de bônus</span>
+                <span className="font-bold text-orange-400 text-sm">{multiplier.toFixed(1)}x de bônus</span>
               </div>
             </div>
 

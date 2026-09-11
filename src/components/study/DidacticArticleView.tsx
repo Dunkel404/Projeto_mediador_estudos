@@ -105,7 +105,7 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
+            <GraduationCap className="w-3.5 h-3.5 text-orange-400" />
             <span>Aula do Professor</span>
           </button>
 
@@ -131,7 +131,7 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
             playTactileClick();
             onOpenStressTest();
           }}
-          className="tactile-btn tactile-btn-amber px-3 py-1.5 text-xs flex items-center gap-1.5"
+          className="tactile-btn tactile-btn-orange px-3.5 py-1.5 text-xs flex items-center gap-1.5"
           title="Iniciar Prova de Estresse com o Professor Gemini"
         >
           <Flame className="w-3.5 h-3.5 fill-white/80 animate-pulse" />
@@ -149,7 +149,7 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
             {/* Header / Article Title Area */}
             <header className="space-y-3 pb-6 border-b border-white/[0.08]">
               <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
-                <span className="px-2.5 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 font-semibold uppercase tracking-wider text-[10px]">
+                <span className="px-2.5 py-0.5 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20 font-semibold uppercase tracking-wider text-[10px]">
                   Teoria Matemática & Computação Gráfica
                 </span>
                 <span className="flex items-center gap-1 text-slate-400 text-[11px]">
@@ -204,10 +204,10 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
 
             {/* Section 2: Historical Context */}
             {article?.historical_context && (
-              <section className="p-5 sm:p-6 rounded-2xl bg-[#0e121a] border border-white/[0.08] space-y-3 shadow-sm hover:border-white/[0.12] transition-colors">
-                <div className="flex items-center gap-2 text-xs font-mono font-bold text-sky-400 uppercase tracking-wider">
-                  <div className="p-1.5 rounded-md bg-sky-500/10 border border-sky-500/20">
-                    <BookOpen className="w-3.5 h-3.5 text-sky-400" />
+              <section className="p-5 sm:p-6 rounded-2xl bg-[#121520] border border-white/[0.08] space-y-3 shadow-sm hover:border-white/[0.12] transition-colors">
+                <div className="flex items-center gap-2 text-xs font-mono font-bold text-orange-400 uppercase tracking-wider">
+                  <div className="p-1.5 rounded-md bg-orange-500/10 border border-orange-500/20">
+                    <BookOpen className="w-3.5 h-3.5 text-orange-400" />
                   </div>
                   <span>2. Origem Histórica na Matemática & Computação Gráfica</span>
                 </div>
@@ -218,11 +218,11 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
             )}
 
             {/* Section 3: Step-by-Step Formal Mathematical Derivations */}
-            <section className="p-5 sm:p-6 rounded-2xl bg-[#0c0f17] border border-white/[0.08] space-y-4 shadow-sm">
+            <section className="p-5 sm:p-6 rounded-2xl bg-[#0e1017] border border-white/[0.08] space-y-4 shadow-sm">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs font-mono font-bold text-violet-400 uppercase tracking-wider">
-                  <div className="p-1.5 rounded-md bg-violet-500/10 border border-violet-500/20">
-                    <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+                <div className="flex items-center gap-2 text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">
+                  <div className="p-1.5 rounded-md bg-amber-500/10 border border-amber-500/20">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                   </div>
                   <span>3. Dedução Analítica Formal Passo a Passo</span>
                 </div>
@@ -235,7 +235,7 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
                 {activeFormulas.map((formula, i) => (
                   <div
                     key={i}
-                    className="group relative p-4 sm:p-5 rounded-xl bg-[#111520] border border-white/[0.06] hover:border-white/[0.12] transition-all"
+                    className="group relative p-4 sm:p-5 rounded-xl bg-[#141724] border border-white/[0.06] hover:border-white/[0.12] transition-all"
                   >
                     <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/[0.04] text-[11px] font-mono text-slate-400">
                       <span className="font-semibold text-slate-300">
@@ -243,7 +243,7 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
                       </span>
                       <button
                         onClick={() => handleCopyFormula(formula, i)}
-                        className="flex items-center gap-1 text-[10px] text-slate-400 hover:text-sky-300 px-2 py-0.5 rounded bg-white/[0.03] hover:bg-white/[0.08] transition-colors cursor-pointer"
+                        className="flex items-center gap-1 text-[10px] text-slate-400 hover:text-orange-300 px-2 py-0.5 rounded bg-white/[0.03] hover:bg-white/[0.08] transition-colors cursor-pointer"
                         title="Copiar código LaTeX"
                       >
                         {copiedFormulaIdx === i ? (
@@ -269,7 +269,7 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
             </section>
 
             {/* Section 4: Hardware Microarchitecture & GPU Pipeline */}
-            <section className="p-5 sm:p-6 rounded-2xl bg-[#0e121a] border-l-4 border-emerald-500/80 border border-white/[0.08] space-y-3 shadow-sm">
+            <section className="p-5 sm:p-6 rounded-2xl bg-[#121520] border-l-4 border-emerald-500/80 border border-white/[0.08] space-y-3 shadow-sm">
               <div className="flex items-center gap-2 text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">
                 <div className="p-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/20">
                   <Layers className="w-3.5 h-3.5 text-emerald-400" />
@@ -284,11 +284,11 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
 
             {/* Section 5: Subtle Code Block (Shader Pipeline) */}
             {activeGlslShader && (
-              <section className="p-5 sm:p-6 rounded-2xl bg-[#0c0f17] border border-white/[0.08] space-y-3 shadow-sm">
+              <section className="p-5 sm:p-6 rounded-2xl bg-[#0e1017] border border-white/[0.08] space-y-3 shadow-sm">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs font-mono font-bold text-sky-400 uppercase tracking-wider">
-                    <div className="p-1.5 rounded-md bg-sky-500/10 border border-sky-500/20">
-                      <Code2 className="w-3.5 h-3.5 text-sky-400" />
+                  <div className="flex items-center gap-2 text-xs font-mono font-bold text-orange-400 uppercase tracking-wider">
+                    <div className="p-1.5 rounded-md bg-orange-500/10 border border-orange-500/20">
+                      <Code2 className="w-3.5 h-3.5 text-orange-400" />
                     </div>
                     <span>5. Implementação no Pipeline GLSL / Shader Execution</span>
                   </div>
@@ -296,7 +296,7 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleCopyShader(activeGlslShader)}
-                      className="flex items-center gap-1 text-[10px] font-mono text-slate-400 hover:text-sky-300 px-2 py-1 rounded-md bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] transition-colors cursor-pointer"
+                      className="flex items-center gap-1 text-[10px] font-mono text-slate-400 hover:text-orange-300 px-2 py-1 rounded-md bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] transition-colors cursor-pointer"
                       title="Copiar código GLSL"
                     >
                       {copiedShader ? (
@@ -384,7 +384,7 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
                     playTactileClick();
                     onOpenSandbox();
                   }}
-                  className="tactile-btn tactile-btn-sky px-4 py-2 text-xs flex items-center gap-1.5"
+                  className="tactile-btn tactile-btn-orange px-4 py-2 text-xs flex items-center gap-1.5"
                 >
                   <Code2 className="w-3.5 h-3.5" />
                   <span>Sandbox 3D</span>
@@ -415,8 +415,8 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
             {article?.curated_references?.papers_and_books &&
               article.curated_references.papers_and_books.length > 0 && (
                 <div className="space-y-3">
-                  <span className="text-xs text-sky-400 font-bold uppercase tracking-wider flex items-center gap-2">
-                    <Book className="w-4 h-4 text-sky-400" />
+                  <span className="text-xs text-orange-400 font-bold uppercase tracking-wider flex items-center gap-2">
+                    <Book className="w-4 h-4 text-orange-400" />
                     Livros Canônicos & Papers Acadêmicos
                   </span>
 
@@ -424,7 +424,7 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
                     {article.curated_references.papers_and_books.map((ref, idx) => (
                       <div
                         key={idx}
-                        className="p-5 rounded-xl bg-[#0e121a] border border-white/[0.08] hover:border-white/[0.12] transition-all space-y-2"
+                        className="p-5 rounded-xl bg-[#121520] border border-white/[0.08] hover:border-white/[0.12] transition-all space-y-2"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div>
@@ -441,7 +441,7 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
                               href={ref.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-sky-400 hover:text-sky-300 p-2 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] transition-colors shrink-0"
+                              className="text-orange-400 hover:text-orange-300 p-2 rounded-lg bg-white/[0.03] hover:bg-white/[0.08] transition-colors shrink-0"
                               title="Acessar publicação"
                             >
                               <ExternalLink className="w-4 h-4" />
@@ -568,7 +568,7 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
                     playTactileClick();
                     setActiveTab('article');
                   }}
-                  className="tactile-btn tactile-btn-neutral px-4 py-1.5 text-xs text-sky-400 font-mono"
+                  className="tactile-btn tactile-btn-neutral px-4 py-1.5 text-xs text-orange-400 font-mono"
                 >
                   Voltar para a Aula Teórica
                 </button>

@@ -225,7 +225,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
       <header className="sticky top-0 z-20 px-5 py-3.5 bg-[#0a0d14]/90 backdrop-blur-md border-b border-white/[0.08] select-none">
         <div className="flex items-center justify-between text-xs font-mono mb-1.5">
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 font-semibold uppercase tracking-wider text-[10px]">
+            <span className="px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20 font-semibold uppercase tracking-wider text-[10px]">
               TIER {node.tier} // {node.category.toUpperCase().replace('_', ' ')}
             </span>
             {activeSubModule && (
@@ -266,7 +266,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
                 className="tactile-btn tactile-btn-neutral px-3.5 py-1.5 text-xs flex items-center gap-1.5"
                 title="Voltar para a aula didática"
               >
-                <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
+                <GraduationCap className="w-3.5 h-3.5 text-orange-400" />
                 <span className="hidden sm:inline">Aula Teórica</span>
               </button>
             )}
@@ -290,9 +290,9 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
       <main className="p-6 md:p-8 max-w-4xl mx-auto w-full space-y-6">
         {/* Theory Summary Badges */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 rounded-xl bg-[#0e121a] border border-sky-500/20 space-y-1.5 shadow-xs">
-            <h2 className="text-xs font-mono font-bold text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+          <div className="p-4 rounded-xl bg-[#0e121a] border border-orange-500/20 space-y-1.5 shadow-xs">
+            <h2 className="text-xs font-mono font-bold text-orange-400 uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-orange-400" />
               Fundamento Matemático
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
@@ -303,7 +303,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
           <div className="p-4 rounded-xl bg-[#0e121a] border border-amber-500/20 space-y-1.5 shadow-xs">
             <h2 className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
               <Layers className="w-3.5 h-3.5 text-amber-400" />
-              Aplicação em Shaders & 3D
+              Aplicação Prática em Shaders
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
               {activeSubModule?.graphicApplication || node.graphicApplication}
@@ -311,19 +311,16 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
           </div>
         </div>
 
-        {/* KaTeX Analytical Formulas */}
+        {/* LaTeX Math Formula Render */}
         {formulas && formulas.length > 0 && (
-          <div className="p-5 rounded-xl bg-[#0c0f17] border border-white/[0.08] space-y-3 shadow-xs">
-            <h2 className="text-xs font-mono text-slate-400 uppercase tracking-wider font-semibold">
-              Equações Analíticas Relevantes:
-            </h2>
-            <div className="space-y-2">
-              {formulas.map((formula, idx) => (
-                <div
-                  key={idx}
-                  className="p-3.5 rounded-lg bg-[#111520] border border-white/[0.04] overflow-x-auto text-slate-100"
-                >
-                  <MathRenderer latex={formula} />
+          <div className="p-4 rounded-xl bg-[#0e121a] border border-white/[0.08] space-y-2 shadow-xs">
+            <span className="text-[11px] font-mono uppercase text-slate-400 font-semibold tracking-wider block">
+              Formulação Analítica Rigorosa:
+            </span>
+            <div className="flex flex-wrap gap-4 items-center">
+              {formulas.map((eq, i) => (
+                <div key={i} className="px-3 py-1.5 rounded-lg bg-[#080a10] border border-white/[0.06] overflow-x-auto text-xs">
+                  <MathRenderer latex={eq} />
                 </div>
               ))}
             </div>
@@ -339,7 +336,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs">
               <div className="p-3 rounded-lg bg-[#121622] border border-white/[0.04]">
                 <span className="text-slate-400 block text-[10px]">CONHECIMENTO</span>
-                <span className="text-sky-400 text-sm font-bold">{progress.scoreKnowledge}/90</span>
+                <span className="text-orange-400 text-sm font-bold">{progress.scoreKnowledge}/90</span>
               </div>
               <div className="p-3 rounded-lg bg-[#121622] border border-white/[0.04]">
                 <span className="text-slate-400 block text-[10px]">PROFICIÊNCIA 3D</span>
@@ -377,8 +374,8 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
         {/* Interactive Validation Form */}
         <div className="p-6 rounded-2xl bg-[#0e121a] border border-white/[0.08] shadow-md space-y-4">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-md bg-sky-500/10 border border-sky-500/20">
-              <Award className="w-4 h-4 text-sky-400" />
+            <div className="p-1.5 rounded-md bg-orange-500/10 border border-orange-500/20">
+              <Award className="w-4 h-4 text-orange-400" />
             </div>
             <h2 className="text-sm font-mono font-bold text-white uppercase tracking-wider">
               {activeExercise ? 'Desafio Analítico do Submódulo' : 'Validação Mecânica da Expressão'}
@@ -407,7 +404,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   {varKeys.map((key) => (
                     <div key={key} className="space-y-1.5">
-                      <label className="text-xs text-sky-300 font-mono font-bold block">
+                      <label className="text-xs text-orange-300 font-mono font-bold block">
                         {key} =
                       </label>
                       <input
@@ -418,7 +415,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
                         }
                         disabled={isSubmitting}
                         placeholder={`Insira a resposta de ${key}...`}
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#080a10] border border-white/10 text-slate-100 font-mono-code text-sm placeholder:text-slate-500 focus:border-sky-500/50 focus:ring-2 focus:ring-sky-500/20 outline-none transition-all disabled:opacity-50"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#080a10] border border-white/10 text-slate-100 font-mono-code text-sm placeholder:text-slate-500 focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all disabled:opacity-50"
                         autoComplete="off"
                         spellCheck="false"
                       />
@@ -429,7 +426,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
             ) : varKeys.length === 1 ? (
               /* Single variable input */
               <div className="space-y-2">
-                <label className="text-xs text-sky-300 font-mono font-bold block">
+                <label className="text-xs text-orange-300 font-mono font-bold block">
                   {varKeys[0]} =
                 </label>
                 <input
@@ -441,7 +438,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
                   }}
                   disabled={isSubmitting}
                   placeholder={`Insira a fórmula analítica ou valor de ${varKeys[0]}...`}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#080a10] border border-white/10 text-slate-100 font-mono-code text-sm placeholder:text-slate-500 focus:border-sky-500/50 focus:ring-2 focus:ring-sky-500/20 outline-none transition-all disabled:opacity-50"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#080a10] border border-white/10 text-slate-100 font-mono-code text-sm placeholder:text-slate-500 focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all disabled:opacity-50"
                   autoComplete="off"
                   spellCheck="false"
                 />
@@ -466,7 +463,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
                   onChange={(e) => setInputVal(e.target.value)}
                   disabled={isSubmitting}
                   placeholder="Insira sua resposta analítica..."
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#080a10] border border-white/10 text-slate-100 font-mono-code text-sm placeholder:text-slate-500 focus:border-sky-500/50 focus:ring-2 focus:ring-sky-500/20 outline-none transition-all disabled:opacity-50"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#080a10] border border-white/10 text-slate-100 font-mono-code text-sm placeholder:text-slate-500 focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all disabled:opacity-50"
                   autoComplete="off"
                   spellCheck="false"
                 />
@@ -482,7 +479,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
                 }}
                 className="tactile-btn tactile-btn-neutral px-4 py-2 text-xs flex items-center justify-center gap-1.5"
               >
-                <Code2 className="w-3.5 h-3.5 text-sky-400" />
+                <Code2 className="w-3.5 h-3.5 text-orange-400" />
                 <span>Abrir Shader Sandbox</span>
               </button>
 
@@ -495,7 +492,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
                       !inputVal.trim()
                     : !inputVal.trim())
                 }
-                className="tactile-btn tactile-btn-sky px-5 py-2 text-xs flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="tactile-btn tactile-btn-orange px-5 py-2 text-xs flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span>Validar Submissão</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -529,7 +526,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
                   <div className="flex flex-wrap items-center gap-3 pt-1">
                     <button
                       onClick={onOpenSandbox}
-                      className="inline-flex items-center gap-1 text-xs text-sky-300 hover:text-sky-200 underline font-medium cursor-pointer"
+                      className="inline-flex items-center gap-1 text-xs text-orange-300 hover:text-orange-200 underline font-medium cursor-pointer"
                     >
                       <span>Ir para o Shader Sandbox e testar em GLSL</span>
                       <ArrowRight className="w-3 h-3" />

@@ -266,13 +266,13 @@ export const CelebrationOverlay: React.FC<CelebrationOverlayProps> = ({
             ? 'bg-[#140e1f]/95 border-rose-500/40 shadow-rose-500/15'
             : isLevelUp
             ? 'bg-[#130e22]/95 border-purple-500/40 shadow-purple-500/15'
-            : 'bg-[#0f1422]/95 border-sky-500/40 shadow-sky-500/15'
+            : 'bg-[#141724]/95 border-orange-500/40 shadow-orange-500/15'
         }`}
       >
         {/* Subtle radial ambient illumination */}
         <div
           className={`absolute -top-24 -left-24 w-60 h-60 rounded-full blur-3xl pointer-events-none opacity-20 ${
-            isMastery ? 'bg-amber-400' : isStreak ? 'bg-rose-500' : 'bg-sky-400'
+            isMastery ? 'bg-amber-400' : isStreak ? 'bg-rose-500' : 'bg-orange-500'
           }`}
         />
 
@@ -296,7 +296,7 @@ export const CelebrationOverlay: React.FC<CelebrationOverlayProps> = ({
                   ? 'bg-gradient-to-br from-rose-500/25 to-amber-500/30 border-rose-500/50 text-rose-300'
                   : isLevelUp
                   ? 'bg-gradient-to-br from-purple-500/25 to-indigo-600/30 border-purple-400/50 text-purple-300'
-                  : 'bg-gradient-to-br from-sky-400/25 to-indigo-600/30 border-sky-400/50 text-sky-300'
+                  : 'bg-gradient-to-br from-orange-400/25 to-amber-600/30 border-orange-400/50 text-orange-300'
               }`}
             >
               {isMastery ? (
@@ -319,7 +319,7 @@ export const CelebrationOverlay: React.FC<CelebrationOverlayProps> = ({
                   ? 'bg-rose-500 text-white border-rose-300'
                   : isLevelUp
                   ? 'bg-purple-500 text-white border-purple-300'
-                  : 'bg-sky-500 text-black border-sky-300'
+                  : 'bg-orange-500 text-white border-orange-400'
               }`}
             >
               {event.badgeText || 'CONQUISTA'}
@@ -339,9 +339,9 @@ export const CelebrationOverlay: React.FC<CelebrationOverlayProps> = ({
           {/* Telemetry Metric Pills */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 w-full font-mono text-xs mb-6">
             {event.scoreKnowledge !== undefined && (
-              <div className="p-2.5 rounded-xl bg-sky-500/10 border border-sky-500/25 flex flex-col items-center">
+              <div className="p-2.5 rounded-xl bg-orange-500/10 border border-orange-500/25 flex flex-col items-center">
                 <span className="text-slate-400 text-[10px] uppercase">CONHECIMENTO</span>
-                <span className="text-sky-300 font-bold text-sm">+{event.scoreKnowledge} XP</span>
+                <span className="text-orange-300 font-bold text-sm">+{event.scoreKnowledge} XP</span>
               </div>
             )}
 
@@ -366,7 +366,7 @@ export const CelebrationOverlay: React.FC<CelebrationOverlayProps> = ({
             className={`w-full py-3 px-5 rounded-xl font-mono font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg ${
               isMastery
                 ? 'tactile-btn tactile-btn-amber text-white'
-                : 'tactile-btn tactile-btn-sky text-white'
+                : 'tactile-btn tactile-btn-orange text-white'
             }`}
           >
             <span>CONTINUAR ESTUDOS</span>

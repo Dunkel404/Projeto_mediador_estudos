@@ -12,11 +12,11 @@ interface DesktopSpatialGraphProps {
 }
 
 const TIER_COLORS: Record<Tier, { text: string; border: string; glow: string; bg: string }> = {
-  0: { text: '#38bdf8', border: '#38bdf8', glow: 'rgba(56, 189, 248, 0.2)', bg: 'rgba(56, 189, 248, 0.06)' },
-  1: { text: '#818cf8', border: '#818cf8', glow: 'rgba(129, 140, 248, 0.2)', bg: 'rgba(129, 140, 248, 0.06)' },
-  2: { text: '#34d399', border: '#34d399', glow: 'rgba(52, 211, 153, 0.2)', bg: 'rgba(52, 211, 153, 0.06)' },
-  3: { text: '#c084fc', border: '#c084fc', glow: 'rgba(192, 132, 252, 0.2)', bg: 'rgba(192, 132, 252, 0.06)' },
-  4: { text: '#fbbf24', border: '#fbbf24', glow: 'rgba(251, 191, 36, 0.2)', bg: 'rgba(251, 191, 36, 0.06)' },
+  0: { text: '#f97316', border: '#f97316', glow: 'rgba(249, 115, 22, 0.25)', bg: 'rgba(249, 115, 22, 0.08)' },
+  1: { text: '#f59e0b', border: '#f59e0b', glow: 'rgba(245, 158, 11, 0.25)', bg: 'rgba(245, 158, 11, 0.08)' },
+  2: { text: '#8b5cf6', border: '#8b5cf6', glow: 'rgba(139, 92, 246, 0.25)', bg: 'rgba(139, 92, 246, 0.08)' },
+  3: { text: '#ec4899', border: '#ec4899', glow: 'rgba(236, 72, 153, 0.25)', bg: 'rgba(236, 72, 153, 0.08)' },
+  4: { text: '#10b981', border: '#10b981', glow: 'rgba(16, 185, 129, 0.25)', bg: 'rgba(16, 185, 129, 0.08)' },
 };
 
 export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
@@ -98,10 +98,10 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onWheel={handleWheel}
-      className="relative w-full h-full bg-[#090b10] ambient-grid overflow-hidden cursor-grab active:cursor-grabbing select-none"
+      className="relative w-full h-full bg-[#0b0d14] ambient-grid overflow-hidden cursor-grab active:cursor-grabbing select-none"
     >
       {/* HUD Control Overlay */}
-      <div className="absolute bottom-4 left-4 z-30 flex items-center gap-1.5 bg-[#0f121a]/95 backdrop-blur-md p-1.5 rounded-xl border border-white/10 text-xs font-mono text-slate-400 shadow-xl">
+      <div className="absolute bottom-4 left-4 z-30 flex items-center gap-1.5 bg-[#121520]/95 backdrop-blur-md p-1.5 rounded-xl border border-white/10 text-xs font-mono text-slate-400 shadow-xl">
         <button
           onClick={() => setZoom((z) => Math.min(2.2, z * 1.15))}
           className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 hover:text-white border border-white/5 transition-colors cursor-pointer"
@@ -121,7 +121,7 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
           className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 hover:text-white border border-white/5 transition-colors cursor-pointer"
           title="Centralizar e ajustar visão"
         >
-          <Crosshair className="w-3.5 h-3.5 text-sky-400" />
+          <Crosshair className="w-3.5 h-3.5 text-orange-400" />
           <span className="text-[10px]">CENTRALIZAR</span>
         </button>
         <span className="px-2 text-[10px] text-slate-400 font-bold">
@@ -151,7 +151,7 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
               markerHeight="6"
               orient="auto-start-reverse"
             >
-              <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8" />
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#f97316" />
             </marker>
             <marker
               id="arrow-locked"
@@ -188,15 +188,15 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
                     <path
                       d={pathD}
                       fill="none"
-                      stroke="#38bdf8"
+                      stroke="#f97316"
                       strokeWidth={3}
-                      opacity={0.2}
+                      opacity={0.25}
                     />
                   )}
                   <path
                     d={pathD}
                     fill="none"
-                    stroke={isMastered ? '#38bdf8' : isAvailable ? '#64748b' : '#334155'}
+                    stroke={isMastered ? '#f97316' : isAvailable ? '#f59e0b' : '#334155'}
                     strokeWidth={isMastered ? 2 : 1.5}
                     strokeDasharray={isMastered ? undefined : '5 4'}
                     markerEnd={isMastered ? 'url(#arrow-mastered)' : 'url(#arrow-locked)'}
@@ -218,27 +218,27 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
           const tierStyle = TIER_COLORS[node.tier] || TIER_COLORS[0];
 
           let borderStyle = 'border-white/10';
-          let bgStyle = 'bg-[#121622]';
+          let bgStyle = 'bg-[#141724]';
           let glowStyle = 'shadow-md shadow-black/40';
 
           if (progress.status === 'mastered') {
-            borderStyle = 'border-emerald-500/40';
-            glowStyle = 'shadow-lg shadow-emerald-950/30';
-            bgStyle = 'bg-[#0f172a]';
+            borderStyle = 'border-orange-500/50';
+            glowStyle = 'shadow-lg shadow-orange-950/40';
+            bgStyle = 'bg-[#1c150e]';
           } else if (progress.status === 'critical_decay') {
-            borderStyle = 'border-amber-500/50';
-            glowStyle = 'shadow-lg shadow-amber-950/30 animate-pulse';
-            bgStyle = 'bg-[#1c1813]';
+            borderStyle = 'border-rose-500/50';
+            glowStyle = 'shadow-lg shadow-rose-950/30 animate-pulse';
+            bgStyle = 'bg-[#1c1214]';
           } else if (progress.status === 'available') {
-            borderStyle = 'border-sky-500/30 hover:border-sky-400';
-            bgStyle = 'bg-[#101524]';
+            borderStyle = 'border-amber-500/35 hover:border-amber-400';
+            bgStyle = 'bg-[#19161a]';
           } else {
-            bgStyle = 'bg-[#0c0f17] opacity-75 hover:opacity-95';
+            bgStyle = 'bg-[#0e1017] opacity-75 hover:opacity-95';
           }
 
           if (isActive) {
-            borderStyle = 'border-sky-400 ring-2 ring-sky-400/40';
-            glowStyle = 'shadow-xl shadow-sky-950/50';
+            borderStyle = 'border-orange-400 ring-2 ring-orange-400/40';
+            glowStyle = 'shadow-xl shadow-orange-950/50';
           }
 
           return (
@@ -266,12 +266,12 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
 
                 <div className="shrink-0">
                   {progress.status === 'locked' && <Lock className="w-3.5 h-3.5 text-slate-600" />}
-                  {progress.status === 'available' && <Sparkles className="w-3.5 h-3.5 text-sky-400" />}
+                  {progress.status === 'available' && <Sparkles className="w-3.5 h-3.5 text-amber-400" />}
                   {progress.status === 'critical_decay' && (
-                    <AlertTriangle className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                    <AlertTriangle className="w-3.5 h-3.5 text-rose-400 animate-pulse" />
                   )}
                   {progress.status === 'mastered' && (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-orange-400" />
                   )}
                 </div>
               </div>
@@ -286,11 +286,11 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
                 <div>
                   <div className="flex justify-between text-slate-400 mb-1">
                     <span>MATEMÁTICA</span>
-                    <span className="text-sky-300 font-bold">{progress.scoreKnowledge}/90</span>
+                    <span className="text-orange-300 font-bold">{progress.scoreKnowledge}/90</span>
                   </div>
                   <div className="w-full h-1.5 bg-black/40 overflow-hidden rounded-full">
                     <div
-                      className="h-full bg-sky-400 rounded-full transition-all"
+                      className="h-full bg-orange-400 rounded-full transition-all"
                       style={{ width: `${(progress.scoreKnowledge / 90) * 100}%` }}
                     />
                   </div>

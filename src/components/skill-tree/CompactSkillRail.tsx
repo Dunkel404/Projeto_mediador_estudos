@@ -33,11 +33,11 @@ const TIER_NAMES: Record<Tier, string> = {
 };
 
 const TIER_COLORS: Record<Tier, { text: string; border: string; bg: string }> = {
-  0: { text: '#38bdf8', border: '#38bdf8', bg: 'rgba(56, 189, 248, 0.1)' },
-  1: { text: '#818cf8', border: '#818cf8', bg: 'rgba(129, 140, 248, 0.1)' },
-  2: { text: '#34d399', border: '#34d399', bg: 'rgba(52, 211, 153, 0.1)' },
-  3: { text: '#c084fc', border: '#c084fc', bg: 'rgba(192, 132, 252, 0.1)' },
-  4: { text: '#fbbf24', border: '#fbbf24', bg: 'rgba(251, 191, 36, 0.1)' },
+  0: { text: '#f97316', border: '#f97316', bg: 'rgba(249, 115, 22, 0.1)' },
+  1: { text: '#f59e0b', border: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
+  2: { text: '#8b5cf6', border: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.1)' },
+  3: { text: '#ec4899', border: '#ec4899', bg: 'rgba(236, 72, 153, 0.1)' },
+  4: { text: '#10b981', border: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
 };
 
 export const CompactSkillRail: React.FC<CompactSkillRailProps> = ({
@@ -71,12 +71,12 @@ export const CompactSkillRail: React.FC<CompactSkillRailProps> = ({
 
   return (
     <div
-      className={`w-72 sm:w-80 h-full flex flex-col bg-[#0b0e15] border-r border-white/10 select-none font-mono text-xs shrink-0 ${className}`}
+      className={`w-72 sm:w-80 h-full flex flex-col bg-[#0b0d14] border-r border-white/10 select-none font-mono text-xs shrink-0 ${className}`}
     >
       {/* Top Header Controls */}
-      <div className="p-3 bg-[#0f121a] border-b border-white/10 flex items-center justify-between">
+      <div className="p-3 bg-[#0e1017] border-b border-white/10 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Layers className="w-4 h-4 text-sky-400" />
+          <Layers className="w-4 h-4 text-orange-400" />
           <span className="font-bold text-white tracking-wider text-[11px] uppercase">
             TRILHA COMPACTA
           </span>
@@ -88,15 +88,15 @@ export const CompactSkillRail: React.FC<CompactSkillRailProps> = ({
             onExitFocusMode();
           }}
           className="flex items-center gap-1.5 px-2.5 py-1 text-[10px] rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
-          title="Sair do Modo Foco e restaurar visualização do Grafo 2D"
+          title="Sair do Modo Foco e restaurar visualização da Trilha"
         >
-          <Maximize2 className="w-3 h-3 text-sky-400" />
+          <Maximize2 className="w-3 h-3 text-orange-400" />
           <span>EXPANDIR</span>
         </button>
       </div>
 
       {/* Quick Search */}
-      <div className="p-2 border-b border-white/10 bg-[#0b0e15]">
+      <div className="p-2 border-b border-white/10 bg-[#0e1017]">
         <div className="relative flex items-center">
           <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 pointer-events-none" />
           <input
@@ -104,7 +104,7 @@ export const CompactSkillRail: React.FC<CompactSkillRailProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Filtrar tópico matemático..."
-            className="w-full pl-8 pr-3 py-1.5 bg-[#121622] rounded-lg border border-white/10 text-white text-[11px] placeholder:text-slate-500 focus:border-sky-400 outline-hidden transition-colors"
+            className="w-full pl-8 pr-3 py-1.5 bg-[#141724] rounded-lg border border-white/10 text-white text-[11px] placeholder:text-slate-500 focus:border-orange-400 outline-hidden transition-colors"
           />
         </div>
       </div>
@@ -175,7 +175,7 @@ export const CompactSkillRail: React.FC<CompactSkillRailProps> = ({
                           ) : status === 'locked' ? (
                             <Lock className="w-3.5 h-3.5 text-slate-600 shrink-0" />
                           ) : (
-                            <CircleDot className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                            <CircleDot className="w-3.5 h-3.5 text-orange-400 shrink-0" />
                           )}
 
                           <span className="truncate text-[11px]">{node.title}</span>

@@ -293,7 +293,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
               </h2>
             </div>
 
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 font-semibold">
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20 font-semibold">
               {node.id}
             </span>
           </div>
@@ -333,7 +333,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
               <div className="p-4 rounded-xl bg-[#0a0d14] border border-white/[0.08] text-xs space-y-1">
                 <div className="flex items-center justify-between text-[11px] font-mono mb-1">
                   <span className="text-slate-400">TÓPICO SELECIONADO:</span>
-                  <span className="text-sky-400 font-semibold">
+                  <span className="text-orange-400 font-semibold">
                     TIER {node.tier} // {node.category}
                   </span>
                 </div>
@@ -344,10 +344,10 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
               </div>
 
               {/* Step 1: Copy Prompt & Open Gemini */}
-              <div className="p-5 rounded-xl bg-[#0e121a] border-l-4 border-sky-500/80 border border-white/[0.08] space-y-3 shadow-xs">
+              <div className="p-5 rounded-xl bg-[#0e121a] border-l-4 border-orange-500/80 border border-white/[0.08] space-y-3 shadow-xs">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-white font-bold flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-sky-500 text-black flex items-center justify-center text-[11px] font-bold">
+                    <span className="w-5 h-5 rounded-full bg-orange-500 text-white flex items-center justify-center text-[11px] font-bold">
                       1
                     </span>
                     <span>Copie o prompt e acesse o Gemini</span>
@@ -364,7 +364,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
                 <div className="flex flex-wrap gap-2.5 pt-1">
                   <button
                     onClick={handleCopyPrompt}
-                    className="tactile-btn tactile-btn-sky px-4 py-2 text-xs flex items-center gap-2"
+                    className="tactile-btn tactile-btn-orange px-4 py-2 text-xs flex items-center gap-2"
                   >
                     <Copy className="w-3.5 h-3.5" />
                     <span>Copiar Prompt de Contexto Zero</span>
@@ -401,7 +401,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
                     onClick={handlePasteFromClipboard}
                     className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/[0.08] text-[11px] font-mono transition-colors cursor-pointer"
                   >
-                    <ClipboardPaste className="w-3 h-3 text-sky-400" />
+                    <ClipboardPaste className="w-3 h-3 text-orange-400" />
                     <span>Colar do Clipboard</span>
                   </button>
                 </div>
@@ -412,7 +412,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
                   onChange={(e) => setPastedJson(e.target.value)}
                   placeholder={`Cole aqui o JSON gerado pelo Gemini...\n{\n  "session_id": "...",\n  "topic": { ... },\n  "interactive_exercise": { ... }\n}`}
                   rows={6}
-                  className="w-full px-4 py-3 rounded-xl bg-[#07090e] border border-white/10 text-slate-200 font-mono-code text-xs placeholder:text-slate-600 focus:border-amber-500/50 focus:ring-2 focus:ring-amber-500/20 outline-none resize-none leading-relaxed transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-[#0b0d14] border border-white/10 text-slate-200 font-mono-code text-xs placeholder:text-slate-600 focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 outline-none resize-none leading-relaxed transition-all"
                   spellCheck="false"
                 />
 
@@ -436,7 +436,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
                     type="button"
                     onClick={() => handleValidateJson()}
                     disabled={!pastedJson.trim()}
-                    className="tactile-btn tactile-btn-amber px-5 py-2 text-xs flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="tactile-btn tactile-btn-orange px-5 py-2 text-xs flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Zap className="w-3.5 h-3.5 fill-white" />
                     <span>Validar & Iniciar Prova</span>
@@ -450,9 +450,9 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
                ============================================================ */
             <div className="space-y-5">
               {/* Topic Banner */}
-              <div className="rounded-xl border border-white/[0.08] bg-[#0a0d14] p-4 space-y-1.5 shadow-xs">
+              <div className="rounded-xl border border-white/[0.08] bg-[#121520] p-4 space-y-1.5 shadow-xs">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-bold font-mono text-sky-400 uppercase tracking-wider">
+                  <h3 className="text-xs font-bold font-mono text-orange-400 uppercase tracking-wider">
                     {assessment.topic.title}
                   </h3>
 
@@ -473,7 +473,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
               </div>
 
               {/* KaTeX Problem Statement */}
-              <div className="p-5 rounded-xl bg-[#0c0f17] border-l-4 border-amber-500/80 border border-white/[0.08] space-y-2 shadow-xs">
+              <div className="p-5 rounded-xl bg-[#0e1017] border-l-4 border-amber-500/80 border border-white/[0.08] space-y-2 shadow-xs">
                 <span className="text-[11px] font-mono uppercase text-amber-400/90 block font-bold tracking-wider">
                   Enunciado Matemático Formal:
                 </span>
@@ -491,7 +491,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   {Object.keys(assessment.interactive_exercise.expected_variables).map((varKey) => (
                     <div key={varKey} className="space-y-1.5">
-                      <label className="text-xs text-sky-300 font-mono font-bold block">
+                      <label className="text-xs text-orange-300 font-mono font-bold block">
                         {varKey} =
                       </label>
                       <input
@@ -500,7 +500,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
                         onChange={(e) => handleInputChange(varKey, e.target.value)}
                         disabled={!!evalResult || isTimeUp}
                         placeholder={`Insira o valor de ${varKey}...`}
-                        className="w-full px-3.5 py-2 rounded-xl bg-[#07090e] border border-white/10 text-sm font-mono-code text-slate-100 placeholder:text-slate-600 focus:border-sky-500/50 focus:ring-2 focus:ring-sky-500/20 outline-none transition-all disabled:opacity-60"
+                        className="w-full px-3.5 py-2 rounded-xl bg-[#0b0d14] border border-white/10 text-sm font-mono-code text-slate-100 placeholder:text-slate-600 focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all disabled:opacity-60"
                         autoComplete="off"
                         spellCheck="false"
                       />
@@ -513,7 +513,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
                     <button
                       type="submit"
                       disabled={isTimeUp}
-                      className="tactile-btn tactile-btn-sky px-5 py-2.5 text-xs flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="tactile-btn tactile-btn-orange px-5 py-2.5 text-xs flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Zap className="w-3.5 h-3.5 fill-white" />
                       <span>Submeter para Diagnóstico FSRS</span>
@@ -574,7 +574,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
                           onClose();
                           onOpenSandbox();
                         }}
-                        className="inline-flex items-center gap-1.5 text-xs text-sky-300 hover:text-white underline font-semibold transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1.5 text-xs text-orange-400 hover:text-orange-300 underline font-semibold transition-colors cursor-pointer"
                       >
                         <span>Abrir Shader Sandbox para validar a mecânica em tempo real</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -609,7 +609,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
                 <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto font-mono text-xs pt-1">
                   <div className="p-2.5 rounded-lg bg-[#121622] border border-white/[0.06]">
                     <span className="text-slate-400 text-[10px] block">ORDEM</span>
-                    <span className="text-sky-400 font-bold">Submódulo {createdSubModule.order}</span>
+                    <span className="text-orange-400 font-bold">Submódulo {createdSubModule.order}</span>
                   </div>
                   <div className="p-2.5 rounded-lg bg-[#121622] border border-white/[0.06]">
                     <span className="text-slate-400 text-[10px] block">PESO ESPACIAL 3D</span>
@@ -623,7 +623,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="tactile-btn tactile-btn-sky px-5 py-2.5 text-xs flex items-center justify-center gap-2 w-full sm:w-auto"
+                    className="tactile-btn tactile-btn-orange px-5 py-2.5 text-xs flex items-center justify-center gap-2 w-full sm:w-auto"
                   >
                     <span>Estudar Novo Submódulo</span>
                     <ArrowRight className="w-3.5 h-3.5" />

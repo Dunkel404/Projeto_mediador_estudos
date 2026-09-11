@@ -48,16 +48,16 @@ export const TelemetryHeader: React.FC<TelemetryHeaderProps> = ({
   const avgScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
 
   return (
-    <header className="w-full bg-[#090b10]/95 backdrop-blur-md border-b border-white/10 px-4 py-2.5 flex items-center justify-between z-40 shadow-md select-none">
+    <header className="w-full bg-[#0b0d14]/95 backdrop-blur-md border-b border-white/10 px-4 py-2.5 flex items-center justify-between z-40 shadow-md select-none">
       {/* Title & Brand */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-400 to-indigo-600 flex items-center justify-center shadow-md shadow-sky-500/20 text-white font-bold text-xs">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shadow-md shadow-orange-500/25 text-white font-bold text-xs">
             SM
           </div>
           <div className="flex flex-col">
             <h1 className="font-mono text-sm font-bold text-white tracking-wider uppercase leading-none">
-              SHADER<span className="text-sky-400">MATH</span>
+              SHADER<span className="text-orange-500">MATH</span>
             </h1>
             <span className="text-[9px] font-mono text-slate-400 tracking-wider">
               PIPELINE FSRS & 3D GPU
@@ -75,12 +75,12 @@ export const TelemetryHeader: React.FC<TelemetryHeaderProps> = ({
       <div className="flex items-center gap-2 sm:gap-3 text-xs font-mono">
         {/* Average Knowledge Pill */}
         <div
-          className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-slate-300"
+          className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-slate-300"
           title="Média de proficiência matemática"
         >
-          <Activity className="w-3.5 h-3.5 text-sky-400" />
+          <Activity className="w-3.5 h-3.5 text-orange-400" />
           <span className="text-slate-400 hidden md:inline">MÉDIA MATEMÁTICA:</span>
-          <span className="text-sky-300 font-bold">{avgScore}/90</span>
+          <span className="text-orange-300 font-bold">{avgScore}/90</span>
         </div>
 
         {/* Mastered Count Pill */}
@@ -118,19 +118,10 @@ export const TelemetryHeader: React.FC<TelemetryHeaderProps> = ({
                 ? 'border-amber-500/40 text-amber-300 bg-amber-500/15 font-bold shadow-sm'
                 : 'border-white/10 text-slate-300 hover:text-white bg-white/5 hover:bg-white/10'
             }`}
-            title={isFocusMode ? 'Restaurar visualização padrão' : 'Ativar Modo Foco'}
+            title={isFocusMode ? 'Desativar Modo Foco' : 'Ativar Modo Foco no Painel Lateral'}
           >
-            {isFocusMode ? (
-              <>
-                <Minimize2 className="w-3.5 h-3.5 text-amber-400" />
-                <span className="hidden md:inline">MODO FOCO: ON</span>
-              </>
-            ) : (
-              <>
-                <Maximize2 className="w-3.5 h-3.5 text-slate-400" />
-                <span className="hidden md:inline">MODO FOCO</span>
-              </>
-            )}
+            <Maximize2 className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden sm:inline font-bold">MODO FOCO</span>
           </button>
         )}
 
@@ -140,10 +131,10 @@ export const TelemetryHeader: React.FC<TelemetryHeaderProps> = ({
             playTactileClick();
             setShowGuideModal(true);
           }}
-          className="flex items-center gap-1.5 px-3 py-1 rounded-lg border border-sky-500/30 text-sky-300 bg-sky-500/10 hover:bg-sky-500/20 text-[11px] transition-all cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1 rounded-lg border border-orange-500/30 text-orange-300 bg-orange-500/10 hover:bg-orange-500/20 text-[11px] transition-all cursor-pointer"
           title="Ver fluxo de conexão com o Gemini via Conta Google"
         >
-          <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+          <Sparkles className="w-3.5 h-3.5 text-orange-400" />
           <span className="hidden sm:inline font-bold">GEMINI: CONTA GOOGLE</span>
         </button>
 
@@ -162,7 +153,7 @@ export const TelemetryHeader: React.FC<TelemetryHeaderProps> = ({
           {muted ? (
             <VolumeX className="w-3.5 h-3.5 text-slate-500" />
           ) : (
-            <Volume2 className="w-3.5 h-3.5 text-sky-400" />
+            <Volume2 className="w-3.5 h-3.5 text-orange-400" />
           )}
         </button>
       </div>
@@ -173,7 +164,7 @@ export const TelemetryHeader: React.FC<TelemetryHeaderProps> = ({
           <div className="w-full max-w-md bg-[#121622] border border-white/15 rounded-2xl p-6 shadow-2xl font-mono relative">
             <div className="flex items-center justify-between mb-4 border-b border-white/10 pb-3">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-sky-400" />
+                <ShieldCheck className="w-4 h-4 text-orange-400" />
                 FLUXO GEMINI (CONTA GOOGLE GRATUITA)
               </h3>
               <button
@@ -185,12 +176,12 @@ export const TelemetryHeader: React.FC<TelemetryHeaderProps> = ({
             </div>
 
             <p className="text-xs text-slate-300 mb-4 leading-relaxed font-sans">
-              Você utiliza o <strong className="text-sky-300">Google Gemini oficial</strong> logado gratuitamente com a sua própria conta Google, sem precisar pagar por chaves de API nem configurar servidores em nuvem.
+              Você utiliza o <strong className="text-orange-400">Google Gemini oficial</strong> logado gratuitamente com a sua própria conta Google, sem precisar pagar por chaves de API nem configurar servidores em nuvem.
             </p>
 
-            <div className="space-y-3 text-xs bg-[#090b10] p-4 rounded-xl border border-white/10">
+            <div className="space-y-3 text-xs bg-[#0b0d14] p-4 rounded-xl border border-white/10">
               <div className="flex items-start gap-2.5">
-                <span className="w-5 h-5 rounded-full bg-sky-500 text-black font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full bg-orange-500 text-white font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">
                   1
                 </span>
                 <p className="text-slate-300 leading-relaxed">
@@ -199,7 +190,7 @@ export const TelemetryHeader: React.FC<TelemetryHeaderProps> = ({
               </div>
 
               <div className="flex items-start gap-2.5">
-                <span className="w-5 h-5 rounded-full bg-sky-500 text-black font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full bg-orange-500 text-white font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">
                   2
                 </span>
                 <p className="text-slate-300 leading-relaxed">
@@ -208,7 +199,7 @@ export const TelemetryHeader: React.FC<TelemetryHeaderProps> = ({
               </div>
 
               <div className="flex items-start gap-2.5">
-                <span className="w-5 h-5 rounded-full bg-amber-500 text-black font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">
                   3
                 </span>
                 <p className="text-slate-300 leading-relaxed">
@@ -217,7 +208,7 @@ export const TelemetryHeader: React.FC<TelemetryHeaderProps> = ({
               </div>
 
               <div className="flex items-start gap-2.5">
-                <span className="w-5 h-5 rounded-full bg-emerald-500 text-black font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">
                   4
                 </span>
                 <p className="text-slate-300 leading-relaxed">
@@ -230,8 +221,8 @@ export const TelemetryHeader: React.FC<TelemetryHeaderProps> = ({
               <a
                 href="https://gemini.google.com/app"
                 target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-xs text-sky-400 hover:text-sky-300 hover:underline"
+                rel="noreferrer"
+                className="flex items-center gap-1.5 text-xs text-orange-400 hover:text-orange-300 hover:underline"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 gemini.google.com ↗
@@ -239,7 +230,7 @@ export const TelemetryHeader: React.FC<TelemetryHeaderProps> = ({
 
               <button
                 onClick={() => setShowGuideModal(false)}
-                className="tactile-btn tactile-btn-sky px-4 py-2 text-xs font-mono"
+                className="tactile-btn tactile-btn-orange px-4 py-2 text-xs font-mono"
               >
                 ENTENDIDO
               </button>

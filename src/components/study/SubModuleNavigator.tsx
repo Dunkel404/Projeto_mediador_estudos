@@ -30,7 +30,7 @@ interface DepthBadgeMeta {
 const DEPTH_METADATA: Record<SubModuleDepth, DepthBadgeMeta> = {
   base_formal_baixo_3d: {
     label: 'Base Formal • Baixo 3D',
-    badgeClass: 'text-sky-400 bg-sky-500/10 border-sky-500/25',
+    badgeClass: 'text-amber-400 bg-amber-500/10 border-amber-500/25',
     icon: Box,
   },
   transicao_espacial_medio_3d: {
@@ -45,7 +45,7 @@ const DEPTH_METADATA: Record<SubModuleDepth, DepthBadgeMeta> = {
   },
   extensao_dinamica_gemini: {
     label: 'Subdivisão Gemini • Especializada',
-    badgeClass: 'text-amber-400 bg-amber-500/10 border-amber-500/25',
+    badgeClass: 'text-orange-400 bg-orange-500/10 border-orange-500/25',
     icon: Sparkles,
   },
 };
@@ -72,10 +72,10 @@ export const SubModuleNavigator: React.FC<SubModuleNavigatorProps> = ({
   return (
     <nav
       aria-label="Navegador de submódulos"
-      className={`flex flex-col bg-[#0b0e15] border-b border-white/[0.08] select-none text-xs ${className}`}
+      className={`flex flex-col bg-[#0b0d14] border-b border-white/[0.08] select-none text-xs ${className}`}
     >
       {/* Top Bar: Metallic 3D Applicability Gauge & Depth Pill */}
-      <div className="px-4 py-2.5 bg-[#080a0f] border-b border-white/[0.05] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+      <div className="px-4 py-2.5 bg-[#0e1017] border-b border-white/[0.05] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
         {/* Submodule Depth Badge & Counter */}
         <div className="flex items-center gap-2.5">
           <span
@@ -93,7 +93,7 @@ export const SubModuleNavigator: React.FC<SubModuleNavigatorProps> = ({
         {/* 3D Applicability Gauge with Precision Brushed Metallic Finish */}
         <div className="flex items-center gap-3 shrink-0">
           <div className="flex items-center gap-1.5 text-[11px] font-mono text-slate-300">
-            <Box className="w-3.5 h-3.5 text-sky-400" />
+            <Box className="w-3.5 h-3.5 text-orange-400" />
             <span className="text-slate-400">APLICABILIDADE 3D:</span>
             <span className="text-white font-bold tracking-tight">{percent3D}%</span>
           </div>
@@ -170,8 +170,8 @@ export const SubModuleNavigator: React.FC<SubModuleNavigatorProps> = ({
               }}
               className={`group flex items-center gap-2 px-3 py-2 rounded-xl text-left font-mono transition-all shrink-0 cursor-pointer ${
                 isActive
-                  ? 'bg-[#151a26] text-white border border-sky-500/40 border-b-2 border-b-sky-400 shadow-[0_2px_8px_rgba(56,189,248,0.14),inset_0_1px_0_rgba(255,255,255,0.12)] ring-1 ring-sky-500/20'
-                  : 'bg-[#0e121a] text-slate-400 border border-white/[0.06] hover:text-slate-200 hover:bg-[#131722] hover:border-white/[0.12] shadow-xs active:translate-y-0.5'
+                  ? 'bg-[#181a24] text-white border border-orange-500/40 border-b-2 border-b-orange-400 shadow-[0_2px_8px_rgba(249,115,22,0.18),inset_0_1px_0_rgba(255,255,255,0.12)] ring-1 ring-orange-500/20'
+                  : 'bg-[#11131c] text-slate-400 border border-white/[0.06] hover:text-slate-200 hover:bg-[#161924] hover:border-white/[0.12] shadow-xs active:translate-y-0.5'
               }`}
             >
               {/* Status Indicator Icon */}
@@ -179,7 +179,7 @@ export const SubModuleNavigator: React.FC<SubModuleNavigatorProps> = ({
                 {isDone ? (
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 drop-shadow-[0_0_4px_rgba(16,185,129,0.3)]" />
                 ) : isActive ? (
-                  <CircleDot className="w-4 h-4 text-sky-400 animate-pulse" />
+                  <CircleDot className="w-4 h-4 text-orange-400 animate-pulse" />
                 ) : (
                   <div className="w-4 h-4 rounded-full border border-white/20 flex items-center justify-center text-[9px] text-slate-500">
                     {sub.order}

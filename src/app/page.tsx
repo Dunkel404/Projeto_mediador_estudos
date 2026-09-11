@@ -60,15 +60,15 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center bg-[#090b10] text-slate-100 font-mono gap-4">
-        <Loader2 className="w-8 h-8 text-sky-400 animate-spin" />
-        <span className="text-xs text-sky-300 tracking-widest uppercase">CARREGANDO TELEMETRIA FSRS...</span>
+      <div className="flex-1 flex flex-col items-center justify-center bg-[#0b0d14] text-slate-100 font-mono gap-4">
+        <Loader2 className="w-8 h-8 text-orange-400 animate-spin" />
+        <span className="text-xs text-orange-300 tracking-widest uppercase">CARREGANDO TELEMETRIA FSRS...</span>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col h-screen overflow-hidden bg-[#090b10]">
+    <div className="flex-1 flex flex-col h-screen overflow-hidden bg-[#0b0d14]">
       {/* HUD Header */}
       <TelemetryHeader
         isFocusMode={isFocusMode}
@@ -100,14 +100,14 @@ export default function Home() {
         {/* Right Side: Study & Practice Panel */}
         {currentNode && (
           <aside
-            className={`h-full z-30 flex flex-col bg-[#0f121a] border-l border-white/10 shadow-2xl transition-all ${
+            className={`h-full z-30 flex flex-col bg-[#121520] border-l border-white/10 shadow-2xl transition-all ${
               isFocusMode
                 ? 'flex-1 min-w-0'
                 : 'absolute lg:relative right-0 top-0 w-full lg:w-[680px] xl:w-[760px]'
             }`}
           >
             {/* Drawer Header Controls */}
-            <div className="flex items-center justify-between px-4 py-2.5 bg-[#0b0e15] border-b border-white/10 select-none">
+            <div className="flex items-center justify-between px-4 py-2.5 bg-[#0e1017] border-b border-white/10 select-none">
               {/* Navigation Tabs */}
               <div className="flex items-center gap-1.5 font-mono text-xs overflow-x-auto">
                 <button
@@ -117,11 +117,11 @@ export default function Home() {
                   }}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer shrink-0 ${
                     panelMode === 'article'
-                      ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40 font-bold shadow-sm'
+                      ? 'bg-orange-500/20 text-orange-300 border border-orange-500/40 font-bold shadow-sm'
                       : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
+                  <GraduationCap className="w-3.5 h-3.5 text-orange-400" />
                   <span>AULA</span>
                 </button>
 

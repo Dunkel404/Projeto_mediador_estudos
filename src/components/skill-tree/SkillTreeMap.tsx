@@ -24,9 +24,13 @@ export const SkillTreeMap: React.FC<SkillTreeMapProps> = ({
   const [viewMode, setViewMode] = useState<'duolingo' | 'graph' | 'tree'>('duolingo');
 
   return (
-    <div className="relative w-full h-full flex flex-col bg-[#090b10]">
+    <div className="relative w-full h-full flex flex-col bg-[#0b0d14]">
       {/* View Switcher Controls (Linear / Modern Pill Bar) */}
-      <div className="absolute top-3 right-3 z-30 flex items-center gap-1 bg-[#0f121a]/90 backdrop-blur-md p-1 rounded-xl border border-white/10 text-xs font-mono shadow-xl">
+      <div className="flex items-center gap-1.5 p-2 border-b border-white/10 bg-[#121520] text-xs font-mono shrink-0 z-30">
+        <span className="text-slate-500 text-[10px] uppercase tracking-wider px-2 hidden md:inline">
+          VISUALIZAÇÃO:
+        </span>
+        
         <button
           onClick={() => {
             playTactileClick();
@@ -34,12 +38,12 @@ export const SkillTreeMap: React.FC<SkillTreeMapProps> = ({
           }}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
             viewMode === 'duolingo'
-              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold shadow-sm'
+              ? 'bg-orange-500/20 text-orange-300 border border-orange-500/40 font-bold shadow-sm'
               : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
           title="Trilha Gamificada Estilo Duolingo"
         >
-          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+          <Sparkles className="w-3.5 h-3.5 text-orange-400" />
           <span className="hidden sm:inline">TRILHA DUOLINGO</span>
         </button>
 
@@ -50,12 +54,12 @@ export const SkillTreeMap: React.FC<SkillTreeMapProps> = ({
           }}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
             viewMode === 'graph'
-              ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40 font-bold shadow-sm'
+              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold shadow-sm'
               : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
           title="Grafo Espacial 2D com Zoom e Pan"
         >
-          <Network className="w-3.5 h-3.5 text-sky-400" />
+          <Network className="w-3.5 h-3.5 text-amber-400" />
           <span className="hidden sm:inline">GRAFO 2D</span>
         </button>
 

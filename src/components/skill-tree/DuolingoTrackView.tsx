@@ -130,11 +130,11 @@ export const DuolingoTrackView: React.FC<DuolingoTrackViewProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col bg-[#090b10] subtle-mesh overflow-hidden select-none">
+    <div className="relative w-full h-full flex flex-col bg-[#0b0d14] subtle-mesh overflow-hidden select-none">
       {/* Gamification Top Ribbon (Linear / Duolingo Hybrid) */}
-      <div className="w-full px-4 py-2.5 bg-[#0f121a]/95 backdrop-blur-md border-b border-white/10 flex items-center justify-between z-20 shadow-lg shrink-0">
+      <div className="w-full px-4 py-2.5 bg-[#121520]/95 backdrop-blur-md border-b border-white/10 flex items-center justify-between z-20 shadow-lg shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-md shadow-amber-500/20 text-white font-bold text-sm">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shadow-md shadow-orange-500/25 text-white font-bold text-sm">
             <Crown className="w-4 h-4 fill-white" />
           </div>
           <div>
@@ -163,19 +163,19 @@ export const DuolingoTrackView: React.FC<DuolingoTrackViewProps> = ({
 
           {/* Mastered Crowns */}
           <div
-            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold"
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 font-bold"
             title="Tópicos com Domínio Absoluto"
           >
-            <Crown className="w-4 h-4 text-emerald-400" />
+            <Crown className="w-4 h-4 text-orange-400" />
             <span>{totalMastered}/{nodes.length}</span>
           </div>
 
           {/* Total Knowledge XP */}
           <div
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-400 font-bold"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 font-bold"
             title="Pontuação Total de Conhecimento"
           >
-            <Zap className="w-4 h-4 fill-sky-400 text-sky-400" />
+            <Zap className="w-4 h-4 fill-orange-400 text-orange-400" />
             <span>{totalScore} XP</span>
           </div>
         </div>
@@ -500,11 +500,11 @@ export const DuolingoTrackView: React.FC<DuolingoTrackViewProps> = ({
                           <div
                             className={`w-full h-full rounded-full flex flex-col items-center justify-center relative transition-all ${
                               state.isMastered
-                                ? 'bg-gradient-to-b from-emerald-500 to-emerald-600 border-2 border-emerald-400 border-b-[6px] border-b-emerald-800 text-white shadow-[0_6px_20px_rgba(16,185,129,0.35)]'
+                                ? 'bg-gradient-to-b from-orange-500 to-orange-600 border-2 border-orange-300 border-b-[6px] border-b-orange-800 text-white shadow-[0_6px_20px_rgba(249,115,22,0.4)]'
                                 : state.isDecaying
-                                ? 'bg-gradient-to-b from-amber-500 to-amber-600 border-2 border-amber-400 border-b-[6px] border-b-amber-800 text-white shadow-[0_6px_20px_rgba(245,158,11,0.35)] animate-pulse'
+                                ? 'bg-gradient-to-b from-rose-500 to-rose-600 border-2 border-rose-400 border-b-[6px] border-b-rose-800 text-white shadow-[0_6px_20px_rgba(244,63,94,0.35)] animate-pulse'
                                 : state.isAvailable
-                                ? 'bg-gradient-to-b from-sky-500 to-sky-600 border-2 border-sky-300 border-b-[6px] border-b-sky-800 text-white shadow-[0_6px_20px_rgba(56,189,248,0.35)]'
+                                ? 'bg-gradient-to-b from-amber-500 to-amber-600 border-2 border-amber-300 border-b-[6px] border-b-amber-800 text-white shadow-[0_6px_20px_rgba(245,158,11,0.35)]'
                                 : 'bg-[#181d28] border border-white/10 border-b-[5px] border-b-[#0e1118] text-slate-500'
                             }`}
                           >
@@ -544,7 +544,7 @@ export const DuolingoTrackView: React.FC<DuolingoTrackViewProps> = ({
                               state.isLocked
                                 ? 'text-slate-500'
                                 : isActive
-                                ? 'text-sky-300 font-extrabold'
+                                ? 'text-orange-400 font-extrabold'
                                 : 'text-slate-200'
                             }`}
                           >
@@ -599,7 +599,7 @@ export const DuolingoTrackView: React.FC<DuolingoTrackViewProps> = ({
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md bg-[#121622] border border-white/15 rounded-3xl p-6 shadow-2xl space-y-4 relative cursor-default"
+            className="w-full max-w-md bg-[#141724] border border-white/15 rounded-3xl p-6 shadow-2xl space-y-4 relative cursor-default"
           >
             {/* Close Button */}
             <button
@@ -612,7 +612,7 @@ export const DuolingoTrackView: React.FC<DuolingoTrackViewProps> = ({
 
             {/* Header Badge */}
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30 uppercase tracking-wider">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-orange-500/20 text-orange-300 border border-orange-500/30 uppercase tracking-wider">
                 TIER {activeCardNode.tier} // {activeCardNode.category.replace('_', ' ')}
               </span>
               <span className="text-xs text-slate-400 font-mono">
@@ -634,12 +634,12 @@ export const DuolingoTrackView: React.FC<DuolingoTrackViewProps> = ({
             <div className="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-black/40 border border-white/10 font-mono text-xs">
               <div>
                 <span className="text-slate-400 text-[10px] block">CONHECIMENTO</span>
-                <span className="text-sky-400 font-bold text-sm">
+                <span className="text-orange-400 font-bold text-sm">
                   {progressMap[activeCardNode.id]?.scoreKnowledge || 0}/90
                 </span>
                 <div className="w-full h-1.5 rounded-full bg-white/10 mt-1 overflow-hidden">
                   <div
-                    className="h-full bg-sky-400 rounded-full"
+                    className="h-full bg-orange-500 rounded-full"
                     style={{
                       width: `${((progressMap[activeCardNode.id]?.scoreKnowledge || 0) / 90) * 100}%`,
                     }}
@@ -670,7 +670,7 @@ export const DuolingoTrackView: React.FC<DuolingoTrackViewProps> = ({
                   onSelectNode(activeCardNode, 'article');
                   setActiveCardNode(null);
                 }}
-                className="tactile-btn tactile-btn-sky w-full py-3 px-4 flex items-center justify-center gap-2 text-sm cursor-pointer"
+                className="tactile-btn tactile-btn-orange w-full py-3.5 px-4 flex items-center justify-center gap-2 text-sm cursor-pointer"
               >
                 <GraduationCap className="w-4 h-4" />
                 <span>INICIAR AULA COMPLETA</span>

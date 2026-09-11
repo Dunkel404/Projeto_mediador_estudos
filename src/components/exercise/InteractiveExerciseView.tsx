@@ -4,7 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { CurriculumNode } from '@/types/curriculum';
 import { MathRenderer } from '@/components/katex/MathRenderer';
 import { useAppStore } from '@/lib/store';
-import { CheckCircle2, AlertTriangle, ArrowRight, Clock, Award, Play } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, ArrowRight, Clock, Award, Play, Flame } from 'lucide-react';
+import { AIStressTestModal } from './AIStressTestModal';
 
 interface InteractiveExerciseViewProps {
   node: CurriculumNode;
@@ -28,6 +29,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
   } | null>(null);
   const [secondsElapsed, setSecondsElapsed] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [showStressModal, setShowStressModal] = useState<boolean>(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -150,7 +152,16 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
             <span>{secondsElapsed}s</span>
           </div>
         </div>
-        <h2 className="text-lg font-bold text-white tracking-tight">{node.title}</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-1">
+          <h2 className="text-lg font-bold text-white tracking-tight">{node.title}</h2>
+          <button
+            onClick={() => setShowStressModal(true)}
+            className="flex items-center gap-1.5 px-3 py-1 bg-[#ffb000]/15 hover:bg-[#ffb000]/25 text-[#ffb000] border border-[#ffb000]/40 text-xs font-mono font-bold transition-all shrink-0"
+          >
+            <Flame className="w-3.5 h-3.5 animate-pulse" />
+            <span>PROVA DE ESTRESSE CIRÚRGICA</span>
+          </button>
+        </div>
       </div>
 
       {/* Math & Graphic Theory Section */}
@@ -287,6 +298,14 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
           )}
         </div>
       </div>
+
+      {showStressModal && (
+        <AIStressTestModal
+          node={node}
+          onClose={() => setShowStressModal(false)}
+          onOpenSandbox={onOpenSandbox}
+        />
+      )}
     </div>
   );
 };

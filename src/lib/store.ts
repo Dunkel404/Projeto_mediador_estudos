@@ -29,9 +29,13 @@ interface AppStore {
     user?: GoogleUserProfile;
     clientId?: string;
   }) => Promise<void>;
-  clearOAuthSession: () => Promise<void>;
+  // Submodule & Dynamic Expansion Actions
+  appendDynamicSubModule: (nodeId: string, subModule: any) => Promise<void>;
+  setActiveSubModule: (nodeId: string, subModuleId: string) => Promise<void>;
+
   recordExerciseAttempt: (params: {
     nodeId: string;
+    subModuleId?: string;
     scoreKnowledge: number;
     score3D: number;
     timeSpentSeconds: number;
@@ -118,7 +122,26 @@ export const useAppStore = create<AppStore>((set, get) => ({
         }
       }
 
+      // Load dynamic submodules from DB and merge into nodes
+      const dynamicSubs = await db.dynamicSubmodules.toArray();
+      let currentNodes = CURRICULUM_NODES;
+      if (dynamicSubs.length > 0) {
+        currentNodes = CURRICULUM_NODES.map((n) => {
+          const matching = dynamicSubs.filter((s) => s.moduleId === n.id);
+          if (matching.length === 0) return n;
+          const baseSubs = n.submodules || [];
+          const combined = [...baseSubs];
+          for (const sub of matching) {
+            if (!combined.some((s) => s.id === sub.id)) {
+              combined.push(sub);
+            }
+          }
+          return { ...n, submodules: combined };
+        });
+      }
+
       set({
+        nodes: currentNodes,
         progressMap,
         fsrsMap,
         oauthToken: tokenVal,
@@ -174,8 +197,42 @@ export const useAppStore = create<AppStore>((set, get) => ({
     });
   },
 
+  appendDynamicSubModule: async (nodeId: string, subModule: any) => {
+    await db.dynamicSubmodules.put(subModule);
+    set((state) => {
+      const updatedNodes = state.nodes.map((node) => {
+        if (node.id === nodeId) {
+          const existing = node.submodules || [];
+          if (existing.some((s) => s.id === subModule.id)) return node;
+          return {
+            ...node,
+            submodules: [...existing, subModule],
+          };
+        }
+        return node;
+      });
+      return { nodes: updatedNodes };
+    });
+  },
+
+  setActiveSubModule: async (nodeId: string, subModuleId: string) => {
+    set((state) => {
+      const progress = state.progressMap[nodeId];
+      if (!progress) return state;
+      const updatedProgress = { ...progress, activeSubModuleId: subModuleId };
+      db.userNodes.update(nodeId, { activeSubModuleId: subModuleId });
+      return {
+        progressMap: {
+          ...state.progressMap,
+          [nodeId]: updatedProgress,
+        },
+      };
+    });
+  },
+
   recordExerciseAttempt: async ({
     nodeId,
+    subModuleId,
     scoreKnowledge,
     score3D,
     timeSpentSeconds,
@@ -219,6 +276,19 @@ export const useAppStore = create<AppStore>((set, get) => ({
     const isMastered = scoreKnowledge >= 90 && score3D >= 8;
     const nextStatus = isMastered ? 'mastered' : 'available';
 
+    // Submodule progress tracking
+    const subMap = currentProgress.submoduleProgressMap || {};
+    if (subModuleId) {
+      const existingSub = subMap[subModuleId];
+      subMap[subModuleId] = {
+        subModuleId,
+        isCompleted: isCorrect && scoreKnowledge >= 85,
+        scoreKnowledge: Math.max(existingSub?.scoreKnowledge || 0, scoreKnowledge),
+        score3D: Math.max(existingSub?.score3D || 0, score3D),
+        attempts: (existingSub?.attempts || 0) + 1,
+      };
+    }
+
     const updatedProgress: UserNodeProgress = {
       ...currentProgress,
       status: nextStatus,
@@ -230,11 +300,13 @@ export const useAppStore = create<AppStore>((set, get) => ({
       totalAttempts: currentProgress.totalAttempts + 1,
       correctAttempts: currentProgress.correctAttempts + (isCorrect ? 1 : 0),
       lastAttemptAt: new Date().toISOString(),
+      submoduleProgressMap: subMap,
     };
 
     // Save attempt log
     const attempt: AttemptLog = {
       nodeId,
+      subModuleId,
       timestamp: new Date().toISOString(),
       scoreKnowledge,
       score3D,

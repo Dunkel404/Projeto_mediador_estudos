@@ -152,6 +152,128 @@ ${JSON.stringify(payload, null, 2)}
   }
 
   /**
+   * Constrói o Prompt de Expansão Dinâmica de Submódulo
+   * Instruindo o Gemini a criar uma nova subdivisão densa e customizada para o nó
+   */
+  public buildDynamicSubmoduleExpansionPrompt(params: {
+    nodeId: string;
+    nodeTitle: string;
+    currentSubmodulesCount: number;
+    telemetry?: any;
+    customTopicFocus?: string;
+  }): string {
+    const nextOrder = params.currentSubmodulesCount + 1;
+    return `[INSTRUÇÃO CRÍTICA DE EXPANSÃO DINÂMICA DE SUBMÓDULO - LEIA COM ATENÇÃO]
+Você atua como o ARQUITETO E PROFESSOR DE COMPUTAÇÃO GRÁFICA SÊNIOR (didática incisiva, analítica e de impacto de Pedro Assaad).
+O aluno solicita a criação de uma NOVA SUBDIVISÃO (Submódulo ${nextOrder}) para o módulo: '${params.nodeTitle}' (ID: ${params.nodeId}).
+
+[OBJETIVO DE EXPANSÃO]
+Não seja simplista. Crie uma subdivisão com RIGOR MATEMÁTICO DENSO e DIFICULDADE REAL EMBUTIDA, que aprofunde a teoria e faça a ponte gradual com Shaders e computação gráfica em tempo real.
+${params.customTopicFocus ? `Foco específico solicitado: ${params.customTopicFocus}` : ''}
+
+[DIRETRIZES OBRIGATÓRIAS]
+1. Responda ÚNICA E EXCLUSIVAMENTE com o objeto JSON estruturado abaixo.
+2. Comece com '{' e termine com '}'.
+3. O campo 'new_submodule_to_append' DEVE vir preenchido com a nova subdivisão completa.
+
+[SCHEMA JSON OBRIGATÓRIO]
+{
+  "session_id": "sess_sub_${params.nodeId}_${Date.now()}",
+  "topic": {
+    "title": "${params.nodeTitle} — Submódulo ${nextOrder}",
+    "math_foundation": "Resumo formal da fundação matemática",
+    "graphic_application": "Aplicação em microarquitetura de GPU e Shaders"
+  },
+  "interactive_exercise": {
+    "type": "NUMERICAL_AND_SHADER_MECHANIC",
+    "statement_latex": "\\\\text{Enunciado do problema em LaTeX}",
+    "expected_variables": {
+      "variavel": "valor"
+    },
+    "diagnostic_traps": [
+      {
+        "trap_id": "erro_comum",
+        "condition": "variavel == erro",
+        "feedback": "Diagnóstico do erro"
+      }
+    ]
+  },
+  "rubric_criteria": {
+    "minimum_score_to_advance": 85,
+    "time_threshold_seconds": 90
+  },
+  "new_submodule_to_append": {
+    "submodule_id": "${params.nodeId}_sub_${nextOrder}_dynamic",
+    "order": ${nextOrder},
+    "title": "Título técnico aprofundado da subdivisão",
+    "depth_type": "extensao_dinamica_gemini",
+    "three_d_applicability_weight": 0.85,
+    "pedagogical_justification": "Por que esta subdivisão aprofunda o domínio conceitual do aluno",
+    "didactic_article": {
+      "title": "Título do Artigo Denso",
+      "subtitle": "Subtítulo explicando a mecânica matemática formal e gráfica",
+      "read_time_minutes": 8,
+      "scientific_pedagogy_note": "Nota científica ancorada em Teoria da Carga Cognitiva",
+      "historical_context": "Contexto histórico e motivação na indústria gráfica",
+      "geometric_intuition": "Intuição geométrica espacial clara",
+      "mathematical_derivation_latex": [
+        "\\\\text{Passo 1: Dedução Formal}",
+        "\\\\mathbf{y} = f(\\\\mathbf{x})"
+      ],
+      "graphics_engine_pipeline": "Como opera no pipeline da GPU e registradores",
+      "curated_references": {
+        "papers_and_books": [
+          {
+            "title": "Livro canônico ou Artigo ACM/IEEE",
+            "author": "Autor",
+            "year": "2020",
+            "description": "Descrição do capítulo relevante"
+          }
+        ],
+        "videos_and_talks": [
+          {
+            "title": "Título da palestra ou vídeo",
+            "channel_or_speaker": "Canal / Palestrante",
+            "key_takeaway": "Insight chave",
+            "search_query_or_url": "Link ou busca no YouTube"
+          }
+        ],
+        "code_and_projects": [
+          {
+            "name": "Nome do shader ou projeto",
+            "repository_or_shadertoy": "URL do Shadertoy ou GitHub",
+            "what_to_analyze": "O que inspecionar no código"
+          }
+        ]
+      }
+    },
+    "interactive_exercise": {
+      "type": "NUMERICAL_AND_SHADER_MECHANIC",
+      "statement_latex": "\\\\text{Enunciado do problema do submódulo em LaTeX}",
+      "expected_variables": {
+        "ans": "valor_esperado"
+      },
+      "diagnostic_traps": [
+        {
+          "trap_id": "armadilha_1",
+          "condition": "ans == valor_errado",
+          "feedback": "Diagnóstico do erro"
+        }
+      ]
+    },
+    "shader_sandbox_payload": {
+      "shader_type": "fragment_glsl",
+      "boilerplate_glsl": "#version 300 es\\nprecision highp float;\\nout vec4 fragColor;\\nvoid main() { fragColor = vec4(1.0); }"
+    },
+    "rubric_criteria": {
+      "minimum_score_to_advance": 85,
+      "time_threshold_seconds": 90
+    }
+  }
+}`;
+  }
+
+  /**
    * Obtém a avaliação offline de contingência
    */
   public getOfflineFallback(nodeId: string): LessonAndAssessmentResponse {

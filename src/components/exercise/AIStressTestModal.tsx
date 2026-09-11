@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { CurriculumNode } from '@/types/curriculum';
+import { CurriculumNode, SubModule } from '@/types/curriculum';
 import { useAppStore } from '@/lib/store';
 import { geminiEngine } from '@/core/ai/gemini-engine';
 import { evaluateSubmission, EvaluationResult } from '@/core/ai/evaluator';
@@ -21,22 +21,29 @@ import {
   FileCode,
   ArrowRight,
   ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 
 interface AIStressTestModalProps {
   node: CurriculumNode;
+  activeSubModule?: SubModule;
+  mode?: 'stress_test' | 'expand_submodule';
   onClose: () => void;
   onOpenSandbox?: () => void;
   onAssessmentLoaded?: (data: LessonAndAssessmentResponse) => void;
+  onSubModuleCreated?: (newSubModule: SubModule) => void;
 }
 
 export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
   node,
+  activeSubModule,
+  mode = 'stress_test',
   onClose,
   onOpenSandbox,
   onAssessmentLoaded,
+  onSubModuleCreated,
 }) => {
-  const { progressMap, fsrsMap, recordExerciseAttempt } = useAppStore();
+  const { progressMap, fsrsMap, recordExerciseAttempt, appendDynamicSubModule } = useAppStore();
   const progress = progressMap[node.id];
   const card = fsrsMap[node.id];
 
@@ -86,7 +93,15 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
     },
   };
 
-  const compiledPrompt = geminiEngine.buildZeroContextPrompt(promptPayload);
+  const compiledPrompt =
+    mode === 'expand_submodule'
+      ? geminiEngine.buildDynamicSubmoduleExpansionPrompt({
+          nodeId: node.id,
+          nodeTitle: node.title,
+          currentSubmodulesCount: node.submodules?.length || 3,
+          telemetry: progress,
+        })
+      : geminiEngine.buildZeroContextPrompt(promptPayload);
 
   const handleCopyPrompt = async () => {
     try {
@@ -116,6 +131,30 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
 
     const validation = geminiEngine.parseAndValidateGeminiResponse(raw);
     if (validation.success && validation.data) {
+      // If a new dynamic submodule is generated, append it to the node
+      if (validation.data.new_submodule_to_append) {
+        const rawSub = validation.data.new_submodule_to_append;
+        const newSub: SubModule = {
+          id: rawSub.submodule_id,
+          moduleId: node.id,
+          order: rawSub.order,
+          title: rawSub.title,
+          depthType: rawSub.depth_type as any,
+          threeDApplicabilityWeight: rawSub.three_d_applicability_weight,
+          mathFoundation: validation.data.topic.math_foundation,
+          graphicApplication: validation.data.topic.graphic_application,
+          latexFormulas: rawSub.didactic_article.mathematical_derivation_latex,
+          didacticArticle: rawSub.didactic_article,
+          interactiveExercise: rawSub.interactive_exercise,
+          defaultGlslShader: rawSub.shader_sandbox_payload?.boilerplate_glsl,
+          targetScoreKnowledge: rawSub.rubric_criteria.minimum_score_to_advance,
+          targetScore3D: 10,
+          isDynamicGenerated: true,
+        };
+        appendDynamicSubModule(node.id, newSub);
+        onSubModuleCreated?.(newSub);
+      }
+
       startExamWithAssessment(validation.data, false);
     } else {
       setJsonError(validation.error || 'JSON inválido ou fora do schema estrito.');
@@ -172,6 +211,7 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
 
     await recordExerciseAttempt({
       nodeId: node.id,
+      subModuleId: activeSubModule?.id,
       scoreKnowledge: result.score,
       score3D: result.score3D,
       timeSpentSeconds: timeSpent,
@@ -194,9 +234,15 @@ export const AIStressTestModal: React.FC<AIStressTestModalProps> = ({
         {/* Modal Header */}
         <div className="px-4 py-3 bg-[#0a0b0e] border-b border-[#242933] flex items-center justify-between font-mono">
           <div className="flex items-center gap-2">
-            <Flame className="w-4 h-4 text-[#ffb000] animate-pulse" />
+            {mode === 'expand_submodule' ? (
+              <Sparkles className="w-4 h-4 text-[#ffb000] animate-pulse" />
+            ) : (
+              <Flame className="w-4 h-4 text-[#ffb000] animate-pulse" />
+            )}
             <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-              {modalStage === 'bridge'
+              {mode === 'expand_submodule'
+                ? 'EXPANSÃO DINÂMICA DE SUBMÓDULO // GEMINI PROFESSOR'
+                : modalStage === 'bridge'
                 ? 'BRIDGE GEMINI // CONEXÃO VIA CONTA GOOGLE'
                 : 'EXECUÇÃO DE PROVA DE ESTRESSE'}
             </h3>

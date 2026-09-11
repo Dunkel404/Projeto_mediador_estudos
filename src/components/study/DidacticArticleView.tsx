@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { CurriculumNode } from '@/types/curriculum';
 import { LessonAndAssessmentResponse, DidacticArticle } from '@/types/ai-contract';
 import { MathRenderer } from '@/components/katex/MathRenderer';
 import {
@@ -19,10 +18,12 @@ import {
   ArrowRight,
   HelpCircle,
 } from 'lucide-react';
+import { CurriculumNode, SubModule } from '@/types/curriculum';
 import { getOfflineAssessment } from '@/core/ai/offline-bank';
 
 interface DidacticArticleViewProps {
   node: CurriculumNode;
+  activeSubModule?: SubModule;
   assessmentData?: LessonAndAssessmentResponse;
   onOpenStressTest: () => void;
   onOpenSandbox: () => void;
@@ -32,6 +33,7 @@ interface DidacticArticleViewProps {
 
 export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
   node,
+  activeSubModule,
   assessmentData,
   onOpenStressTest,
   onOpenSandbox,
@@ -41,7 +43,16 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
   const [activeTab, setActiveTab] = useState<'article' | 'references'>('article');
 
   const resolvedData = assessmentData || getOfflineAssessment(node.id);
-  const article: DidacticArticle | undefined = resolvedData?.didactic_article;
+  const article: DidacticArticle | undefined =
+    activeSubModule?.didacticArticle || resolvedData?.didactic_article;
+  const activeTitle = activeSubModule?.title || article?.title || node.title;
+  const activeSubtitle = article?.subtitle || activeSubModule?.mathFoundation || node.mathFoundation;
+  const activeFormulas =
+    article?.mathematical_derivation_latex && article.mathematical_derivation_latex.length > 0
+      ? article.mathematical_derivation_latex
+      : activeSubModule?.latexFormulas && activeSubModule.latexFormulas.length > 0
+      ? activeSubModule.latexFormulas
+      : node.latexFormulas;
 
   return (
     <div className={`flex flex-col h-full bg-[#12141a] border border-[#242933] overflow-y-auto ${className}`}>
@@ -95,10 +106,10 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
                 TEORIA MATEMÁTICA ANCORADA EM COMPUTAÇÃO GRÁFICA
               </span>
               <h2 className="text-xl font-bold text-white tracking-tight">
-                {article?.title || node.title}
+                {activeTitle}
               </h2>
               <p className="text-sm text-slate-300 mt-1 font-sans">
-                {article?.subtitle || node.mathFoundation}
+                {activeSubtitle}
               </p>
 
               {article?.scientific_pedagogy_note && (
@@ -119,7 +130,7 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
                 1. Intuição Geométrica e Modelo Mental
               </h3>
               <p className="text-xs text-slate-300 leading-relaxed font-sans">
-                {article?.geometric_intuition || node.graphicApplication}
+                {article?.geometric_intuition || activeSubModule?.graphicApplication || node.graphicApplication}
               </p>
             </div>
 
@@ -144,13 +155,11 @@ export const DidacticArticleView: React.FC<DidacticArticleViewProps> = ({
               </h3>
 
               <div className="space-y-2">
-                {(article?.mathematical_derivation_latex || node.latexFormulas).map(
-                  (formula, i) => (
-                    <div key={i} className="p-3 bg-[#12141a] border border-[#242933]">
-                      <MathRenderer latex={formula} />
-                    </div>
-                  )
-                )}
+                {activeFormulas.map((formula, i) => (
+                  <div key={i} className="p-3 bg-[#12141a] border border-[#242933]">
+                    <MathRenderer latex={formula} />
+                  </div>
+                ))}
               </div>
             </div>
 

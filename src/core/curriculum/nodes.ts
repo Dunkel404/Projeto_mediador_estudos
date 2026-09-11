@@ -1,6 +1,7 @@
 import { CurriculumNode } from '@/types/curriculum';
+import { getSubModulesForNode } from './submodules';
 
-export const CURRICULUM_NODES: CurriculumNode[] = [
+const RAW_CURRICULUM_NODES: CurriculumNode[] = [
   // ==========================================
   // TIER 0: Álgebra e Trigonometria Operacional
   // ==========================================
@@ -621,3 +622,8 @@ void main() {
     gridPosition: { x: 820, y: 860 }
   }
 ];
+
+export const CURRICULUM_NODES: CurriculumNode[] = RAW_CURRICULUM_NODES.map((node) => ({
+  ...node,
+  submodules: getSubModulesForNode(node.id, node.title),
+}));

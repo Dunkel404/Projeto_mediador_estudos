@@ -1,10 +1,11 @@
 import Dexie, { Table } from 'dexie';
-import { UserNodeProgress } from '@/types/curriculum';
+import { UserNodeProgress, SubModule } from '@/types/curriculum';
 import { FSRSCard } from '@/types/fsrs';
 
 export interface AttemptLog {
   id?: number;
   nodeId: string;
+  subModuleId?: string;
   timestamp: string;
   scoreKnowledge: number;
   score3D: number;
@@ -24,6 +25,7 @@ export class ShaderMathDatabase extends Dexie {
   fsrsCards!: Table<FSRSCard, string>;
   attempts!: Table<AttemptLog, number>;
   settings!: Table<UserSetting, string>;
+  dynamicSubmodules!: Table<SubModule, string>;
 
   constructor() {
     super('ShaderMathDB');
@@ -32,6 +34,9 @@ export class ShaderMathDatabase extends Dexie {
       fsrsCards: 'nodeId, due, state',
       attempts: '++id, nodeId, timestamp, isCorrect',
       settings: 'key',
+    });
+    this.version(2).stores({
+      dynamicSubmodules: 'id, moduleId, order',
     });
   }
 }

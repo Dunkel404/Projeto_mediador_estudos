@@ -63,14 +63,19 @@ export const DidacticArticleSchema = z.object({
   curated_references: CuratedReferencesSchema,
 });
 
-export const LessonAndAssessmentSchema = z.object({
-  session_id: z.string(),
-  topic: z.object({
-    title: z.string(),
-    math_foundation: z.string(),
-    graphic_application: z.string(),
-  }),
-  didactic_article: DidacticArticleSchema.optional(),
+export const DynamicSubModulePayloadSchema = z.object({
+  submodule_id: z.string(),
+  order: z.number(),
+  title: z.string(),
+  depth_type: z.enum([
+    'base_formal_baixo_3d',
+    'transicao_espacial_medio_3d',
+    'shaders_avancados_alto_3d',
+    'extensao_dinamica_gemini',
+  ]),
+  three_d_applicability_weight: z.number().min(0).max(1),
+  pedagogical_justification: z.string(),
+  didactic_article: DidacticArticleSchema,
   interactive_exercise: InteractiveExerciseSchema,
   shader_sandbox_payload: ShaderSandboxPayloadSchema.optional(),
   rubric_criteria: z.object({
@@ -79,6 +84,25 @@ export const LessonAndAssessmentSchema = z.object({
   }),
 });
 
+export const LessonAndAssessmentSchema = z.object({
+  session_id: z.string(),
+  topic: z.object({
+    title: z.string(),
+    math_foundation: z.string(),
+    graphic_application: z.string(),
+  }),
+  current_submodule_index: z.number().optional(),
+  didactic_article: DidacticArticleSchema.optional(),
+  interactive_exercise: InteractiveExerciseSchema,
+  shader_sandbox_payload: ShaderSandboxPayloadSchema.optional(),
+  rubric_criteria: z.object({
+    minimum_score_to_advance: z.number(),
+    time_threshold_seconds: z.number(),
+  }),
+  new_submodule_to_append: DynamicSubModulePayloadSchema.optional(),
+});
+
+export type DynamicSubModulePayload = z.infer<typeof DynamicSubModulePayloadSchema>;
 export type LessonAndAssessmentResponse = z.infer<typeof LessonAndAssessmentSchema>;
 export type DidacticArticle = z.infer<typeof DidacticArticleSchema>;
 export type CuratedReferences = z.infer<typeof CuratedReferencesSchema>;

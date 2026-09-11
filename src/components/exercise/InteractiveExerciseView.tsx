@@ -1,21 +1,25 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { CurriculumNode } from '@/types/curriculum';
+import { CurriculumNode, SubModule } from '@/types/curriculum';
 import { MathRenderer } from '@/components/katex/MathRenderer';
 import { useAppStore } from '@/lib/store';
-import { CheckCircle2, AlertTriangle, ArrowRight, Clock, Award, Play, Flame } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, ArrowRight, Clock, Award, Play, Flame, GraduationCap, Box } from 'lucide-react';
 import { AIStressTestModal } from './AIStressTestModal';
 
 interface InteractiveExerciseViewProps {
   node: CurriculumNode;
+  activeSubModule?: SubModule;
   onOpenSandbox: () => void;
+  onOpenArticle?: () => void;
   className?: string;
 }
 
 export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = ({
   node,
+  activeSubModule,
   onOpenSandbox,
+  onOpenArticle,
   className = '',
 }) => {
   const { progressMap, recordExerciseAttempt } = useAppStore();
@@ -44,7 +48,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [node.id]);
+  }, [node.id, activeSubModule?.id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,8 +67,13 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
 
     // Node-specific deterministic problem checks
     if (node.id === 't0_algebra_fma') {
-      // Ex: Qual a forma FMA de f(x) = 2x^2 + 5x + 3? Esperado: x*(2*x+5)+3 ou similar
-      if (cleanInput.includes('x*(2*x+5)+3') || cleanInput.includes('x*(2x+5)+3') || cleanInput === 'x(2x+5)+3') {
+      if (
+        cleanInput.includes('x*(2*x+5)+3') ||
+        cleanInput.includes('x*(2x+5)+3') ||
+        cleanInput === 'x(2x+5)+3' ||
+        cleanInput.includes('1/(sqrt(x+1)+sqrt(x))') ||
+        cleanInput === '3'
+      ) {
         isCorrect = true;
         score = 90;
       } else if (cleanInput.includes('2*x*x')) {
@@ -75,32 +84,15 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
         diagnosticMsg = 'Erro de fatoração na decomposição para FMA.';
       }
     } else if (node.id === 't1_vectors_dot') {
-      // Ex: Calcule N . L para N = (0, 0.6, 0.8) e L = (0, 0, 1). Esperado: 0.8
       const val = parseFloat(cleanInput);
-      if (Math.abs(val - 0.8) < 0.01) {
+      if (Math.abs(val - 0.8) < 0.01 || Math.abs(val - 0.6) < 0.01 || val === 1) {
         isCorrect = true;
         score = 90;
-      } else if (Math.abs(val - 0.6) < 0.01) {
-        score = 45;
-        diagnosticMsg = 'Confusão de eixos: você projetou no eixo Y em vez do eixo Z da luz.';
       } else {
         score = 30;
         diagnosticMsg = 'Erro de cálculo do produto interno escalar sum(Ni * Li).';
       }
-    } else if (node.id === 't2_tetrahedron_normals') {
-      // Ex: A técnica do tetraedro reduz a amostragem de normais de quantas para quantas amostragens? Esperado: 4 ou 6 para 4
-      if (cleanInput === '4' || cleanInput.includes('4amostragens') || cleanInput.includes('4')) {
-        isCorrect = true;
-        score = 92;
-      } else if (cleanInput === '6') {
-        score = 40;
-        diagnosticMsg = '6 é o custo da diferença finita centrada ortogonal; o tetraedro requer apenas 4 amostragens.';
-      } else {
-        score = 30;
-        diagnosticMsg = 'Erro de contagem de vértices do tetraedro para derivadas numéricas.';
-      }
     } else {
-      // General mathematical verification
       if (cleanInput.length > 0 && !isNaN(Number(cleanInput))) {
         isCorrect = true;
         score = 88;
@@ -110,10 +102,12 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
       }
     }
 
-    const score3D = isCorrect ? Math.min(10, Math.round((score / 90) * 10)) : 2;
+    const target3D = activeSubModule ? activeSubModule.targetScore3D : 10;
+    const score3D = isCorrect ? Math.min(target3D, Math.round((score / 90) * target3D)) : 1;
 
     await recordExerciseAttempt({
       nodeId: node.id,
+      subModuleId: activeSubModule?.id,
       scoreKnowledge: score,
       score3D,
       timeSpentSeconds: timeSpent,
@@ -126,7 +120,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
     if (isCorrect) {
       setFeedback({
         type: 'success',
-        message: `Correto! Pontuação: ${score}/90 — 3D: ${score3D}/10. Tempo: ${timeSpent}s.`,
+        message: `Correto! Pontuação: ${score}/90 — Aplicabilidade 3D: ${score3D}/${target3D}. Tempo: ${timeSpent}s.`,
         scoreDelta: score,
       });
     } else {
@@ -153,14 +147,34 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
           </div>
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-1">
-          <h2 className="text-lg font-bold text-white tracking-tight">{node.title}</h2>
-          <button
-            onClick={() => setShowStressModal(true)}
-            className="flex items-center gap-1.5 px-3 py-1 bg-[#ffb000]/15 hover:bg-[#ffb000]/25 text-[#ffb000] border border-[#ffb000]/40 text-xs font-mono font-bold transition-all shrink-0"
-          >
-            <Flame className="w-3.5 h-3.5 animate-pulse" />
-            <span>PROVA DE ESTRESSE CIRÚRGICA</span>
-          </button>
+          <div>
+            <h2 className="text-lg font-bold text-white tracking-tight">
+              {activeSubModule?.title || node.title}
+            </h2>
+            {activeSubModule && (
+              <span className="text-[11px] font-mono text-[#ffb000] block mt-0.5">
+                Submódulo {activeSubModule.order} — Peso 3D: {Math.round(activeSubModule.threeDApplicabilityWeight * 100)}%
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            {onOpenArticle && (
+              <button
+                onClick={onOpenArticle}
+                className="flex items-center gap-1 px-2.5 py-1 bg-[#00f0ff]/15 hover:bg-[#00f0ff]/25 text-[#00f0ff] border border-[#00f0ff]/40 text-xs font-mono font-bold transition-all cursor-pointer"
+              >
+                <GraduationCap className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">AULA</span>
+              </button>
+            )}
+            <button
+              onClick={() => setShowStressModal(true)}
+              className="flex items-center gap-1.5 px-3 py-1 bg-[#ffb000]/15 hover:bg-[#ffb000]/25 text-[#ffb000] border border-[#ffb000]/40 text-xs font-mono font-bold transition-all cursor-pointer"
+            >
+              <Flame className="w-3.5 h-3.5 animate-pulse" />
+              <span>PROVA DE ESTRESSE</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -168,12 +182,12 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
       <div className="p-4 space-y-4">
         <div className="p-3.5 bg-[#0f1117] border-l-2 border-[#00f0ff] text-xs leading-relaxed">
           <h4 className="font-mono text-[#00f0ff] font-bold mb-1">FUNDAMENTO MATEMÁTICO:</h4>
-          <p className="text-slate-300">{node.mathFoundation}</p>
+          <p className="text-slate-300">{activeSubModule?.mathFoundation || node.mathFoundation}</p>
         </div>
 
         <div className="p-3.5 bg-[#0f1117] border-l-2 border-[#ffb000] text-xs leading-relaxed">
           <h4 className="font-mono text-[#ffb000] font-bold mb-1">APLICAÇÃO DIRETA EM SHADERS & 3D:</h4>
-          <p className="text-slate-300">{node.graphicApplication}</p>
+          <p className="text-slate-300">{activeSubModule?.graphicApplication || node.graphicApplication}</p>
         </div>
 
         {/* KaTeX Formulas */}
@@ -181,7 +195,7 @@ export const InteractiveExerciseView: React.FC<InteractiveExerciseViewProps> = (
           <h4 className="text-[11px] font-mono text-slate-400 mb-2 uppercase tracking-wider">
             Equações Analíticas do Tópico:
           </h4>
-          {node.latexFormulas.map((formula, idx) => (
+          {(activeSubModule?.latexFormulas || node.latexFormulas).map((formula, idx) => (
             <MathRenderer key={idx} latex={formula} />
           ))}
         </div>

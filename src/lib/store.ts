@@ -4,7 +4,6 @@ import { CURRICULUM_NODES } from '@/core/curriculum/nodes';
 import { CurriculumNode, UserNodeProgress, ProficiencyLevel, ResponseSpeed } from '@/types/curriculum';
 import { FSRSCard } from '@/types/fsrs';
 import { fsrs } from '@/core/fsrs/fsrs';
-import { geminiEngine } from '@/core/ai/gemini-engine';
 import { GoogleUserProfile } from './oauth';
 
 interface AppStore {
@@ -77,9 +76,6 @@ export const useAppStore = create<AppStore>((set, get) => ({
       const tokenVal = storedToken ? storedToken.value : null;
       const expiryVal = storedExpiry ? parseInt(storedExpiry.value, 10) : null;
       const clientIdVal = storedClientId ? storedClientId.value : '';
-
-      // Configure Gemini engine with loaded OAuth token
-      geminiEngine.setOAuthToken(tokenVal, expiryVal);
 
       const progressMap: Record<string, UserNodeProgress> = {};
       const fsrsMap: Record<string, FSRSCard> = {};
@@ -158,8 +154,6 @@ export const useAppStore = create<AppStore>((set, get) => ({
       await db.settings.put({ key: 'oauth_user_profile', value: JSON.stringify(user) });
     }
 
-    geminiEngine.setOAuthToken(token, expiresAt);
-
     set({
       oauthToken: token,
       oauthExpiresAt: expiresAt,
@@ -172,8 +166,6 @@ export const useAppStore = create<AppStore>((set, get) => ({
     await db.settings.delete('oauth_access_token');
     await db.settings.delete('oauth_expires_at');
     await db.settings.delete('oauth_user_profile');
-
-    geminiEngine.setOAuthToken(null, null);
 
     set({
       oauthToken: null,

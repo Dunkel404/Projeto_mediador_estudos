@@ -1,4 +1,4 @@
-import { LessonAndAssessmentResponse } from '@/types/ai-contract';
+import { LessonAndAssessmentResponse } from '../../types/ai-contract';
 
 export const OFFLINE_STRESS_BANK: Record<string, LessonAndAssessmentResponse> = {
   t0_algebra_fma: {

@@ -79,11 +79,27 @@ function checkTrapCondition(condition: string, userAnswers: Record<string, strin
   try {
     const orParts = condition.split('||').map((p) => p.trim());
     for (const part of orParts) {
-      const match = part.match(/([a-zA-Z0-9_]+)\s*(==|!=|>|<)\s*([a-zA-Z0-9_.-]+)/);
-      if (match) {
-        const [, varName, op, targetVal] = match;
+      // 1. Check for varName.includes("...") or varName.includes('...')
+      const includesMatch = part.match(/([a-zA-Z0-9_]+)\.includes\(\s*["']([^"']+)["']\s*\)/);
+      if (includesMatch) {
+        const [, varName, searchStr] = includesMatch;
         const userVal = (userAnswers[varName] || '').trim();
         if (!userVal) continue;
+        const cleanUser = userVal.replace(/\s+/g, '').toLowerCase();
+        const cleanSearch = searchStr.replace(/\s+/g, '').toLowerCase();
+        if (cleanUser.includes(cleanSearch)) return true;
+        continue;
+      }
+
+      // 2. Check for binary comparisons: ==, !=, >=, <=, >, <
+      const match = part.match(/([a-zA-Z0-9_]+)\s*(==|!=|>=|<=|>|<)\s*(["']?[^"'\s]+["']?)/);
+      if (match) {
+        const [, varName, op, rawTargetVal] = match;
+        const userVal = (userAnswers[varName] || '').trim();
+        if (!userVal) continue;
+
+        // Strip quotes if present
+        const targetVal = rawTargetVal.replace(/^["']|["']$/g, '').trim();
 
         const numUser = parseFloat(userVal);
         const numTarget = parseFloat(targetVal);
@@ -93,9 +109,13 @@ function checkTrapCondition(condition: string, userAnswers: Record<string, strin
           if (op === '!=' && Math.abs(numUser - numTarget) >= 0.01) return true;
           if (op === '>' && numUser > numTarget) return true;
           if (op === '<' && numUser < numTarget) return true;
+          if (op === '>=' && numUser >= numTarget - 0.001) return true;
+          if (op === '<=' && numUser <= numTarget + 0.001) return true;
         } else {
-          if (op === '==' && userVal === targetVal) return true;
-          if (op === '!=' && userVal !== targetVal) return true;
+          const cleanUser = userVal.replace(/\s+/g, '').toLowerCase();
+          const cleanTarget = targetVal.replace(/\s+/g, '').toLowerCase();
+          if (op === '==' && cleanUser === cleanTarget) return true;
+          if (op === '!=' && cleanUser !== cleanTarget) return true;
         }
       }
     }

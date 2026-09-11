@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { CurriculumNode, UserNodeProgress, Tier } from '@/types/curriculum';
-import { Lock, CheckCircle2, AlertOctagon, Sparkles, Crosshair, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
+import { Lock, CheckCircle2, AlertTriangle, Sparkles, Crosshair, ZoomIn, ZoomOut } from 'lucide-react';
 
 interface DesktopSpatialGraphProps {
   nodes: CurriculumNode[];
@@ -12,11 +12,11 @@ interface DesktopSpatialGraphProps {
 }
 
 const TIER_COLORS: Record<Tier, { text: string; border: string; glow: string; bg: string }> = {
-  0: { text: '#00f0ff', border: '#00f0ff', glow: 'rgba(0, 240, 255, 0.3)', bg: 'rgba(0, 240, 255, 0.08)' },
-  1: { text: '#38bdf8', border: '#38bdf8', glow: 'rgba(56, 189, 248, 0.3)', bg: 'rgba(56, 189, 248, 0.08)' },
-  2: { text: '#ffb000', border: '#ffb000', glow: 'rgba(255, 176, 0, 0.3)', bg: 'rgba(255, 176, 0, 0.08)' },
-  3: { text: '#c084fc', border: '#c084fc', glow: 'rgba(192, 132, 252, 0.3)', bg: 'rgba(192, 132, 252, 0.08)' },
-  4: { text: '#f43f5e', border: '#f43f5e', glow: 'rgba(244, 63, 94, 0.3)', bg: 'rgba(244, 63, 94, 0.08)' },
+  0: { text: '#38bdf8', border: '#38bdf8', glow: 'rgba(56, 189, 248, 0.2)', bg: 'rgba(56, 189, 248, 0.06)' },
+  1: { text: '#818cf8', border: '#818cf8', glow: 'rgba(129, 140, 248, 0.2)', bg: 'rgba(129, 140, 248, 0.06)' },
+  2: { text: '#34d399', border: '#34d399', glow: 'rgba(52, 211, 153, 0.2)', bg: 'rgba(52, 211, 153, 0.06)' },
+  3: { text: '#c084fc', border: '#c084fc', glow: 'rgba(192, 132, 252, 0.2)', bg: 'rgba(192, 132, 252, 0.06)' },
+  4: { text: '#fbbf24', border: '#fbbf24', glow: 'rgba(251, 191, 36, 0.2)', bg: 'rgba(251, 191, 36, 0.06)' },
 };
 
 export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
@@ -39,9 +39,9 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
     for (const n of nodes) {
       minX = Math.min(minX, n.gridPosition.x);
-      maxX = Math.max(maxX, n.gridPosition.x + 200);
+      maxX = Math.max(maxX, n.gridPosition.x + 220);
       minY = Math.min(minY, n.gridPosition.y);
-      maxY = Math.max(maxY, n.gridPosition.y + 140);
+      maxY = Math.max(maxY, n.gridPosition.y + 150);
     }
 
     const graphW = maxX - minX;
@@ -62,7 +62,6 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
   }, [nodes]);
 
   useEffect(() => {
-    // Initial auto-center with slight delay for container sizing
     const timer = setTimeout(autoCenterGraph, 50);
     return () => clearTimeout(timer);
   }, [autoCenterGraph]);
@@ -99,33 +98,33 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onWheel={handleWheel}
-      className="relative w-full h-full bg-[#0a0b0e] vulkan-grid overflow-hidden cursor-grab active:cursor-grabbing select-none"
+      className="relative w-full h-full bg-[#090b10] ambient-grid overflow-hidden cursor-grab active:cursor-grabbing select-none"
     >
       {/* HUD Control Overlay */}
-      <div className="absolute bottom-4 left-4 z-30 flex items-center gap-1.5 bg-[#12141a]/95 backdrop-blur-md p-1.5 border border-[#242933] text-xs font-mono text-slate-400 shadow-xl">
+      <div className="absolute bottom-4 left-4 z-30 flex items-center gap-1.5 bg-[#0f121a]/95 backdrop-blur-md p-1.5 rounded-xl border border-white/10 text-xs font-mono text-slate-400 shadow-xl">
         <button
           onClick={() => setZoom((z) => Math.min(2.2, z * 1.15))}
-          className="p-1.5 bg-[#181b22] hover:text-white border border-[#242933] transition-colors"
+          className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 hover:text-white border border-white/5 transition-colors cursor-pointer"
           title="Zoom In"
         >
           <ZoomIn className="w-3.5 h-3.5" />
         </button>
         <button
           onClick={() => setZoom((z) => Math.max(0.35, z * 0.85))}
-          className="p-1.5 bg-[#181b22] hover:text-white border border-[#242933] transition-colors"
+          className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 hover:text-white border border-white/5 transition-colors cursor-pointer"
           title="Zoom Out"
         >
           <ZoomOut className="w-3.5 h-3.5" />
         </button>
         <button
           onClick={autoCenterGraph}
-          className="flex items-center gap-1 px-2 py-1 bg-[#181b22] hover:text-white border border-[#242933] transition-colors"
+          className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 hover:text-white border border-white/5 transition-colors cursor-pointer"
           title="Centralizar e ajustar visão"
         >
-          <Crosshair className="w-3.5 h-3.5 text-[#00f0ff]" />
+          <Crosshair className="w-3.5 h-3.5 text-sky-400" />
           <span className="text-[10px]">CENTRALIZAR</span>
         </button>
-        <span className="px-1.5 text-[10px] text-slate-500 font-bold">
+        <span className="px-2 text-[10px] text-slate-400 font-bold">
           {Math.round(zoom * 100)}%
         </span>
       </div>
@@ -140,7 +139,7 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
         {/* SVG Connector Layer */}
         <svg
           className="overflow-visible absolute top-0 left-0 w-full h-full pointer-events-none z-0"
-          style={{ width: '3000px', height: '3000px' }}
+          style={{ width: '3200px', height: '3200px' }}
         >
           <defs>
             <marker
@@ -152,7 +151,7 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
               markerHeight="6"
               orient="auto-start-reverse"
             >
-              <path d="M 0 1 L 10 5 L 0 9 z" fill="#00f0ff" />
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8" />
             </marker>
             <marker
               id="arrow-locked"
@@ -163,7 +162,7 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
               markerHeight="6"
               orient="auto-start-reverse"
             >
-              <path d="M 0 1 L 10 5 L 0 9 z" fill="#475569" />
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#334155" />
             </marker>
           </defs>
 
@@ -172,10 +171,10 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
               const prereq = nodeMap.get(prereqId);
               if (!prereq) return null;
 
-              const startX = prereq.gridPosition.x + 190;
-              const startY = prereq.gridPosition.y + 55;
+              const startX = prereq.gridPosition.x + 200;
+              const startY = prereq.gridPosition.y + 60;
               const endX = node.gridPosition.x;
-              const endY = node.gridPosition.y + 55;
+              const endY = node.gridPosition.y + 60;
 
               const dx = Math.abs(endX - startX) * 0.5;
               const pathD = `M ${startX} ${startY} C ${startX + dx} ${startY}, ${endX - dx} ${endY}, ${endX} ${endY}`;
@@ -185,21 +184,20 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
 
               return (
                 <g key={`${prereqId}->${node.id}`}>
-                  {/* Glow under line */}
                   {isMastered && (
                     <path
                       d={pathD}
                       fill="none"
-                      stroke="#00f0ff"
-                      strokeWidth={4}
-                      opacity={0.25}
+                      stroke="#38bdf8"
+                      strokeWidth={3}
+                      opacity={0.2}
                     />
                   )}
                   <path
                     d={pathD}
                     fill="none"
-                    stroke={isMastered ? '#00f0ff' : isAvailable ? '#94a3b8' : '#475569'}
-                    strokeWidth={isMastered ? 2.2 : 1.5}
+                    stroke={isMastered ? '#38bdf8' : isAvailable ? '#64748b' : '#334155'}
+                    strokeWidth={isMastered ? 2 : 1.5}
                     strokeDasharray={isMastered ? undefined : '5 4'}
                     markerEnd={isMastered ? 'url(#arrow-mastered)' : 'url(#arrow-locked)'}
                   />
@@ -219,28 +217,28 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
           const isActive = activeNodeId === node.id;
           const tierStyle = TIER_COLORS[node.tier] || TIER_COLORS[0];
 
-          let borderStyle = 'border-[#334155]';
-          let bgStyle = 'bg-[#141722]';
-          let glowStyle = '';
+          let borderStyle = 'border-white/10';
+          let bgStyle = 'bg-[#121622]';
+          let glowStyle = 'shadow-md shadow-black/40';
 
           if (progress.status === 'mastered') {
-            borderStyle = 'border-[#00f0ff]';
-            glowStyle = 'shadow-[0_0_18px_rgba(0,240,255,0.35)]';
-            bgStyle = 'bg-[#121826]';
+            borderStyle = 'border-emerald-500/40';
+            glowStyle = 'shadow-lg shadow-emerald-950/30';
+            bgStyle = 'bg-[#0f172a]';
           } else if (progress.status === 'critical_decay') {
-            borderStyle = 'border-[#ffb000]';
-            glowStyle = 'shadow-[0_0_18px_rgba(255,176,0,0.4)] animate-pulse';
-            bgStyle = 'bg-[#1a1712]';
+            borderStyle = 'border-amber-500/50';
+            glowStyle = 'shadow-lg shadow-amber-950/30 animate-pulse';
+            bgStyle = 'bg-[#1c1813]';
           } else if (progress.status === 'available') {
-            borderStyle = 'border-slate-400 hover:border-[#00f0ff]';
-            bgStyle = 'bg-[#141926]';
+            borderStyle = 'border-sky-500/30 hover:border-sky-400';
+            bgStyle = 'bg-[#101524]';
           } else {
-            bgStyle = 'bg-[#11131c] opacity-80 hover:opacity-100';
+            bgStyle = 'bg-[#0c0f17] opacity-75 hover:opacity-95';
           }
 
           if (isActive) {
-            borderStyle = 'border-white';
-            glowStyle = 'ring-2 ring-[#00f0ff] shadow-[0_0_25px_rgba(0,240,255,0.5)]';
+            borderStyle = 'border-sky-400 ring-2 ring-sky-400/40';
+            glowStyle = 'shadow-xl shadow-sky-950/50';
           }
 
           return (
@@ -253,12 +251,12 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
                 left: `${node.gridPosition.x}px`,
                 top: `${node.gridPosition.y}px`,
                 position: 'absolute',
-                width: '190px',
+                width: '205px',
               }}
-              className={`skill-node p-3 rounded-xs border-2 transition-all cursor-pointer select-none z-10 ${borderStyle} ${bgStyle} ${glowStyle}`}
+              className={`skill-node p-3.5 rounded-xl border transition-all cursor-pointer select-none z-10 hover:-translate-y-0.5 ${borderStyle} ${bgStyle} ${glowStyle}`}
             >
               {/* Header Badge */}
-              <div className="flex items-center justify-between mb-1.5 pb-1 border-b border-[#242933]">
+              <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-white/5">
                 <span
                   style={{ color: tierStyle.text }}
                   className="text-[10px] font-mono font-bold tracking-wider uppercase"
@@ -267,45 +265,45 @@ export const DesktopSpatialGraph: React.FC<DesktopSpatialGraphProps> = ({
                 </span>
 
                 <div className="shrink-0">
-                  {progress.status === 'locked' && <Lock className="w-3 h-3 text-slate-500" />}
-                  {progress.status === 'available' && <Sparkles className="w-3.5 h-3.5 text-[#00f0ff]" />}
+                  {progress.status === 'locked' && <Lock className="w-3.5 h-3.5 text-slate-600" />}
+                  {progress.status === 'available' && <Sparkles className="w-3.5 h-3.5 text-sky-400" />}
                   {progress.status === 'critical_decay' && (
-                    <AlertOctagon className="w-3.5 h-3.5 text-[#ffb000]" />
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
                   )}
                   {progress.status === 'mastered' && (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#00f0ff]" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                   )}
                 </div>
               </div>
 
               {/* Title */}
-              <h4 className="text-xs font-semibold text-white line-clamp-2 leading-tight mb-2 min-h-[32px]">
+              <h4 className="text-xs font-semibold text-white line-clamp-2 leading-snug mb-2.5 min-h-[32px]">
                 {node.title}
               </h4>
 
               {/* Score Indicators */}
-              <div className="space-y-1.5 font-mono text-[10px] pt-1 border-t border-[#242933]">
+              <div className="space-y-1.5 font-mono text-[10px] pt-1.5 border-t border-white/5">
                 <div>
-                  <div className="flex justify-between text-slate-400 mb-0.5">
+                  <div className="flex justify-between text-slate-400 mb-1">
                     <span>MATEMÁTICA</span>
-                    <span className="text-[#00f0ff] font-bold">{progress.scoreKnowledge}/90</span>
+                    <span className="text-sky-300 font-bold">{progress.scoreKnowledge}/90</span>
                   </div>
-                  <div className="w-full h-1 bg-[#0a0b0e] overflow-hidden rounded-xs">
+                  <div className="w-full h-1.5 bg-black/40 overflow-hidden rounded-full">
                     <div
-                      className="h-full bg-[#00f0ff] transition-all"
+                      className="h-full bg-sky-400 rounded-full transition-all"
                       style={{ width: `${(progress.scoreKnowledge / 90) * 100}%` }}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-slate-400 mb-0.5">
-                    <span>3D SHADERS</span>
-                    <span className="text-[#ffb000] font-bold">{progress.score3D}/10</span>
+                  <div className="flex justify-between text-slate-400 mb-1">
+                    <span>SHADERS 3D</span>
+                    <span className="text-amber-400 font-bold">{progress.score3D}/10</span>
                   </div>
-                  <div className="w-full h-1 bg-[#0a0b0e] overflow-hidden rounded-xs">
+                  <div className="w-full h-1.5 bg-black/40 overflow-hidden rounded-full">
                     <div
-                      className="h-full bg-[#ffb000] transition-all"
+                      className="h-full bg-amber-400 rounded-full transition-all"
                       style={{ width: `${(progress.score3D / 10) * 100}%` }}
                     />
                   </div>

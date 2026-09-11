@@ -7,11 +7,10 @@ import {
   CheckCircle2,
   CircleDot,
   Box,
-  Brain,
   Layers,
-  ArrowRight,
-  Plus,
+  Cpu,
 } from 'lucide-react';
+import { playTactileClick } from '@/lib/audio-feedback';
 
 interface SubModuleNavigatorProps {
   submodules: SubModule[];
@@ -22,146 +21,206 @@ interface SubModuleNavigatorProps {
   className?: string;
 }
 
-const DEPTH_LABELS: Record<SubModuleDepth, { label: string; color: string; bg: string; border: string }> = {
+interface DepthBadgeMeta {
+  label: string;
+  badgeClass: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const DEPTH_METADATA: Record<SubModuleDepth, DepthBadgeMeta> = {
   base_formal_baixo_3d: {
-    label: 'BASE FORMAL RIGOROSA (BAIXO 3D)',
-    color: '#00f0ff',
-    bg: 'rgba(0, 240, 255, 0.1)',
-    border: '#00f0ff',
+    label: 'Base Formal • Baixo 3D',
+    badgeClass: 'text-sky-400 bg-sky-500/10 border-sky-500/25',
+    icon: Box,
   },
   transicao_espacial_medio_3d: {
-    label: 'TRANSIÇÃO ESPACIAL & VETORIAL (MÉDIO 3D)',
-    color: '#38bdf8',
-    bg: 'rgba(56, 189, 248, 0.1)',
-    border: '#38bdf8',
+    label: 'Transição Espacial • Médio 3D',
+    badgeClass: 'text-violet-400 bg-violet-500/10 border-violet-500/25',
+    icon: Layers,
   },
   shaders_avancados_alto_3d: {
-    label: 'SHADERS & PIPELINE GPU (ALTO 3D)',
-    color: '#10b981',
-    bg: 'rgba(16, 185, 129, 0.1)',
-    border: '#10b981',
+    label: 'Shaders GPU • Alto 3D',
+    badgeClass: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/25',
+    icon: Cpu,
   },
   extensao_dinamica_gemini: {
-    label: 'SUBDIVISÃO DINÂMICA (GEMINI PROFESSOR)',
-    color: '#ffb000',
-    bg: 'rgba(255, 176, 0, 0.12)',
-    border: '#ffb000',
+    label: 'Subdivisão Gemini • Especializada',
+    badgeClass: 'text-amber-400 bg-amber-500/10 border-amber-500/25',
+    icon: Sparkles,
   },
 };
 
 export const SubModuleNavigator: React.FC<SubModuleNavigatorProps> = ({
-  submodules,
+  submodules = [],
   activeSubModuleId,
   onSelectSubModule,
   onTriggerDynamicExpansion,
   submoduleProgressMap = {},
   className = '',
 }) => {
+  if (!submodules || submodules.length === 0) {
+    return null;
+  }
+
   const activeSub = submodules.find((s) => s.id === activeSubModuleId) || submodules[0];
-  const depthMeta = DEPTH_LABELS[activeSub?.depthType || 'base_formal_baixo_3d'];
+  const depthType: SubModuleDepth = activeSub?.depthType || 'base_formal_baixo_3d';
+  const depthMeta = DEPTH_METADATA[depthType] || DEPTH_METADATA.base_formal_baixo_3d;
+  const DepthIcon = depthMeta.icon;
+
   const percent3D = Math.round((activeSub?.threeDApplicabilityWeight ?? 0.25) * 100);
 
   return (
-    <div className={`flex flex-col bg-[#0d0f14] border-b border-[#242933] font-mono text-xs ${className}`}>
-      {/* Top Bar: 3D Applicability Gauge & Depth Level */}
-      <div className="px-4 py-2 bg-[#090a0d] border-b border-[#1e232d] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
+    <nav
+      aria-label="Navegador de submódulos"
+      className={`flex flex-col bg-[#0b0e15] border-b border-white/[0.08] select-none text-xs ${className}`}
+    >
+      {/* Top Bar: Metallic 3D Applicability Gauge & Depth Pill */}
+      <div className="px-4 py-2.5 bg-[#080a0f] border-b border-white/[0.05] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        {/* Submodule Depth Badge & Counter */}
+        <div className="flex items-center gap-2.5">
           <span
-            className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border"
-            style={{
-              color: depthMeta.color,
-              backgroundColor: depthMeta.bg,
-              borderColor: depthMeta.border,
-            }}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border font-mono ${depthMeta.badgeClass}`}
           >
-            {depthMeta.label}
+            <DepthIcon className="w-3 h-3 shrink-0" />
+            <span>{depthMeta.label}</span>
           </span>
-          <span className="text-slate-400 text-[11px] truncate">
-            Submódulo {activeSub?.order} de {submodules.length}
+
+          <span className="text-slate-400 text-[11px] font-mono">
+            Módulo {activeSub?.order || 1} de {submodules.length}
           </span>
         </div>
 
-        {/* 3D Applicability Progress Meter */}
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="flex items-center gap-1.5 text-[11px] text-slate-300">
-            <Box className="w-3.5 h-3.5 text-[#00f0ff]" />
-            <span>APLICABILIDADE 3D:</span>
-            <strong className="text-white font-bold">{percent3D}%</strong>
+        {/* 3D Applicability Gauge with Precision Brushed Metallic Finish */}
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 text-[11px] font-mono text-slate-300">
+            <Box className="w-3.5 h-3.5 text-sky-400" />
+            <span className="text-slate-400">APLICABILIDADE 3D:</span>
+            <span className="text-white font-bold tracking-tight">{percent3D}%</span>
           </div>
 
-          <div className="w-24 sm:w-32 h-2 bg-[#181b22] border border-[#242933] overflow-hidden">
+          {/* Precision Matte Metallic Gauge Housing */}
+          <div
+            className="relative w-28 sm:w-36 h-3 rounded-full p-0.5 overflow-hidden"
+            style={{
+              background: 'linear-gradient(180deg, #181c26 0%, #0d1017 50%, #151822 100%)',
+              boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.1)',
+            }}
+            role="progressbar"
+            aria-valuenow={percent3D}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Porcentagem de aplicabilidade 3D"
+          >
+            {/* Matte Brushed Gradient Fill with Subtle Metallic Luster */}
             <div
-              className="h-full transition-all duration-300"
+              className="h-full rounded-full transition-all duration-400 ease-out relative overflow-hidden"
               style={{
                 width: `${percent3D}%`,
                 background:
                   percent3D >= 80
-                    ? 'linear-gradient(90deg, #38bdf8, #10b981)'
+                    ? 'linear-gradient(90deg, #0284c7 0%, #38bdf8 40%, #10b981 100%)'
                     : percent3D >= 50
-                    ? 'linear-gradient(90deg, #00f0ff, #ffb000)'
-                    : '#00f0ff',
+                    ? 'linear-gradient(90deg, #0284c7 0%, #818cf8 50%, #f59e0b 100%)'
+                    : 'linear-gradient(90deg, #0369a1 0%, #38bdf8 100%)',
+                boxShadow: '0 0 6px rgba(56, 189, 248, 0.35)',
               }}
+            >
+              {/* Metallic highlight overlay sheen */}
+              <div
+                className="absolute inset-0 opacity-25"
+                style={{
+                  background:
+                    'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%)',
+                }}
+              />
+            </div>
+
+            {/* Precision Metallic Needle Indicator */}
+            <div
+              className="absolute top-0 bottom-0 w-1.5 -ml-0.75 rounded-full bg-white shadow-[0_0_6px_#38bdf8,0_1px_2px_rgba(0,0,0,0.8)] z-10 transition-all duration-400 ease-out pointer-events-none"
+              style={{ left: `${Math.min(97, Math.max(3, percent3D))}%` }}
             />
+
+            {/* Subtle Metallic Calibration Tick Marks */}
+            <div className="absolute inset-0 flex justify-between px-3 pointer-events-none opacity-25">
+              <div className="w-px h-full bg-white" />
+              <div className="w-px h-full bg-white" />
+              <div className="w-px h-full bg-white" />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Submodule Stepper Tabs */}
-      <div className="px-3 py-2 flex items-center gap-1.5 overflow-x-auto select-none">
-        {submodules.map((sub, idx) => {
+      {/* Submodule Stepper Tabs Rail */}
+      <div className="px-3 py-2 flex items-center gap-2 overflow-x-auto select-none scrollbar-none">
+        {submodules.map((sub) => {
           const isActive = sub.id === activeSub?.id;
           const prog = submoduleProgressMap[sub.id];
           const isDone = prog?.isCompleted;
-          const subMeta = DEPTH_LABELS[sub.depthType];
+          const subMeta = DEPTH_METADATA[sub.depthType] || DEPTH_METADATA.base_formal_baixo_3d;
+          const subPercent = Math.round(sub.threeDApplicabilityWeight * 100);
 
           return (
             <button
               key={sub.id}
-              onClick={() => onSelectSubModule(sub.id)}
-              className={`flex items-center gap-2 px-3 py-1.5 border transition-all shrink-0 cursor-pointer text-left ${
+              onClick={() => {
+                playTactileClick();
+                onSelectSubModule(sub.id);
+              }}
+              className={`group flex items-center gap-2 px-3 py-2 rounded-xl text-left font-mono transition-all shrink-0 cursor-pointer ${
                 isActive
-                  ? 'bg-[#181d26] border-[#00f0ff] text-white shadow-[0_0_10px_rgba(0,240,255,0.15)] font-bold'
-                  : 'bg-[#12141a] border-[#242933] text-slate-400 hover:text-slate-200 hover:bg-[#161922]'
+                  ? 'bg-[#151a26] text-white border border-sky-500/40 border-b-2 border-b-sky-400 shadow-[0_2px_8px_rgba(56,189,248,0.14),inset_0_1px_0_rgba(255,255,255,0.12)] ring-1 ring-sky-500/20'
+                  : 'bg-[#0e121a] text-slate-400 border border-white/[0.06] hover:text-slate-200 hover:bg-[#131722] hover:border-white/[0.12] shadow-xs active:translate-y-0.5'
               }`}
             >
-              <div className="flex items-center gap-1.5">
+              {/* Status Indicator Icon */}
+              <div className="shrink-0">
                 {isDone ? (
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#10b981] shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 drop-shadow-[0_0_4px_rgba(16,185,129,0.3)]" />
                 ) : isActive ? (
-                  <CircleDot className="w-3.5 h-3.5 text-[#00f0ff] shrink-0" />
+                  <CircleDot className="w-4 h-4 text-sky-400 animate-pulse" />
                 ) : (
-                  <span className="w-4 h-4 rounded-full bg-[#1e232d] text-slate-400 flex items-center justify-center text-[10px] shrink-0">
+                  <div className="w-4 h-4 rounded-full border border-white/20 flex items-center justify-center text-[9px] text-slate-500">
                     {sub.order}
-                  </span>
+                  </div>
                 )}
-                <span className="text-[11px] truncate max-w-[140px] sm:max-w-[180px]">
+              </div>
+
+              {/* Submodule Title */}
+              <div className="flex flex-col">
+                <span
+                  className={`text-xs font-semibold line-clamp-1 transition-colors ${
+                    isActive ? 'text-white' : 'text-slate-300 group-hover:text-white'
+                  }`}
+                >
                   {sub.title}
                 </span>
               </div>
 
+              {/* 3D Applicability Mini Badge */}
               <span
-                className="text-[9px] px-1 py-0.2 border ml-1 font-bold shrink-0"
-                style={{
-                  color: subMeta.color,
-                  borderColor: `${subMeta.border}50`,
-                }}
+                className={`text-[10px] px-1.5 py-0.5 rounded-md border font-semibold shrink-0 ml-1 ${subMeta.badgeClass}`}
               >
-                {Math.round(sub.threeDApplicabilityWeight * 100)}% 3D
+                {subPercent}% 3D
               </span>
             </button>
           );
         })}
 
-        {/* Dynamic Submodule Expansion Trigger */}
+        {/* Elegant Gemini Dynamic Submodule Expansion Trigger */}
         <button
-          onClick={onTriggerDynamicExpansion}
-          className="flex items-center gap-1 px-3 py-1.5 bg-[#ffb000]/10 hover:bg-[#ffb000]/20 text-[#ffb000] border border-[#ffb000]/40 transition-colors shrink-0 cursor-pointer ml-auto"
+          onClick={() => {
+            playTactileClick();
+            onTriggerDynamicExpansion();
+          }}
+          className="tactile-btn tactile-btn-neutral px-3.5 py-2 text-[11px] font-mono font-semibold text-amber-300 border border-amber-500/30 hover:border-amber-500/50 hover:text-amber-200 flex items-center gap-1.5 shrink-0 ml-auto transition-all shadow-[0_3px_0_#131722,0_0_12px_rgba(245,158,11,0.08)] active:translate-y-0.5"
           title="Solicitar que o Professor Gemini crie uma nova subdivisão especializada para aprofundar este módulo"
         >
-          <Sparkles className="w-3 h-3 animate-pulse text-[#ffb000]" />
-          <span className="text-[11px] font-bold">+ EXPANDIR MÓDULO VIA GEMINI</span>
+          <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+          <span>+ EXPANDIR VIA GEMINI</span>
         </button>
       </div>
-    </div>
+    </nav>
   );
 };

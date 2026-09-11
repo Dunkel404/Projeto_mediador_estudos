@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { CurriculumNode, UserNodeProgress, Tier } from '@/types/curriculum';
-import { Lock, CheckCircle2, AlertOctagon, Sparkles, ChevronRight, ChevronDown } from 'lucide-react';
+import { Lock, CheckCircle2, AlertTriangle, Sparkles, ChevronRight, ChevronDown } from 'lucide-react';
 
 interface MobileTrackTreeProps {
   nodes: CurriculumNode[];
@@ -11,12 +11,12 @@ interface MobileTrackTreeProps {
   activeNodeId?: string | null;
 }
 
-const TIER_NAMES: Record<Tier, string> = {
-  0: 'Tier 0: Álgebra e Trigonometria Operacional',
-  1: 'Tier 1: Álgebra Linear e Transformações 3D',
-  2: 'Tier 2: Cálculo Diferencial e SDFs',
-  3: 'Tier 3: Cálculo Integral e Radiometria Física',
-  4: 'Tier 4: Campos Vetoriais e Tensores Básicos',
+const TIER_NAMES: Record<Tier, { title: string; color: string; badgeBg: string }> = {
+  0: { title: 'Tier 0: Álgebra e Trigonometria Operacional', color: '#38bdf8', badgeBg: 'rgba(56, 189, 248, 0.15)' },
+  1: { title: 'Tier 1: Álgebra Linear e Transformações 3D', color: '#818cf8', badgeBg: 'rgba(129, 140, 248, 0.15)' },
+  2: { title: 'Tier 2: Cálculo Diferencial e SDFs', color: '#34d399', badgeBg: 'rgba(52, 211, 153, 0.15)' },
+  3: { title: 'Tier 3: Cálculo Integral e Radiometria Física', color: '#c084fc', badgeBg: 'rgba(192, 132, 252, 0.15)' },
+  4: { title: 'Tier 4: Campos Vetoriais e Tensores Básicos', color: '#fbbf24', badgeBg: 'rgba(251, 191, 36, 0.15)' },
 };
 
 export const MobileTrackTree: React.FC<MobileTrackTreeProps> = ({
@@ -40,25 +40,47 @@ export const MobileTrackTree: React.FC<MobileTrackTreeProps> = ({
   // Group nodes by Tier
   const tierGroups: Record<number, CurriculumNode[]> = { 0: [], 1: [], 2: [], 3: [], 4: [] };
   for (const node of nodes) {
-    tierGroups[node.tier].push(node);
+    if (tierGroups[node.tier]) {
+      tierGroups[node.tier].push(node);
+    }
   }
 
   return (
-    <div className="w-full h-full overflow-y-auto p-4 space-y-4 bg-[#0a0b0e]">
+    <div className="w-full h-full overflow-y-auto p-4 space-y-4 bg-[#090b10] select-none">
       {([0, 1, 2, 3, 4] as Tier[]).map((tier) => {
         const tierNodes = tierGroups[tier] || [];
         const isExpanded = !!expandedTiers[tier];
+        const tierMeta = TIER_NAMES[tier];
+
+        const completedCount = tierNodes.filter(
+          (n) => progressMap[n.id]?.status === 'mastered'
+        ).length;
 
         return (
-          <div key={tier} className="border border-[#242933] bg-[#12141a]/60">
+          <div
+            key={tier}
+            className="rounded-2xl border border-white/10 bg-[#0f121a] overflow-hidden shadow-lg"
+          >
             {/* Tier Header */}
             <button
               onClick={() => toggleTier(tier)}
-              className="w-full flex items-center justify-between px-3.5 py-2.5 bg-[#181b22] text-left hover:bg-[#242933]/50 transition-colors"
+              className="w-full flex items-center justify-between px-4 py-3 bg-[#131722] hover:bg-[#181d2c] transition-colors cursor-pointer text-left"
             >
-              <span className="font-mono text-xs font-bold text-[#00f0ff] uppercase tracking-wider">
-                {TIER_NAMES[tier]}
-              </span>
+              <div className="flex items-center gap-2.5">
+                <span
+                  className="w-2.5 h-2.5 rounded-full"
+                  style={{ backgroundColor: tierMeta.color }}
+                />
+                <span
+                  className="font-mono text-xs font-bold uppercase tracking-wider"
+                  style={{ color: tierMeta.color }}
+                >
+                  {tierMeta.title}
+                </span>
+                <span className="text-[11px] font-mono text-slate-400">
+                  ({completedCount}/{tierNodes.length})
+                </span>
+              </div>
               {isExpanded ? (
                 <ChevronDown className="w-4 h-4 text-slate-400" />
               ) : (
@@ -68,7 +90,7 @@ export const MobileTrackTree: React.FC<MobileTrackTreeProps> = ({
 
             {/* Nodes in Tier */}
             {isExpanded && (
-              <div className="p-3 space-y-2.5">
+              <div className="p-3.5 space-y-2.5">
                 {tierNodes.map((node) => {
                   const progress = progressMap[node.id] || {
                     status: 'locked',
@@ -78,12 +100,12 @@ export const MobileTrackTree: React.FC<MobileTrackTreeProps> = ({
                   const isLocked = progress.status === 'locked';
                   const isActive = activeNodeId === node.id;
 
-                  let borderStyle = 'border-[#242933]';
-                  if (progress.status === 'mastered') borderStyle = 'border-[#00f0ff]';
-                  else if (progress.status === 'critical_decay') borderStyle = 'border-[#ffb000]';
-                  else if (progress.status === 'available') borderStyle = 'border-slate-500';
+                  let borderStyle = 'border-white/5 hover:border-white/20';
+                  if (progress.status === 'mastered') borderStyle = 'border-emerald-500/30';
+                  else if (progress.status === 'critical_decay') borderStyle = 'border-amber-500/40';
+                  else if (progress.status === 'available') borderStyle = 'border-sky-500/30';
 
-                  if (isActive) borderStyle = 'ring-1 ring-[#00f0ff] border-white';
+                  if (isActive) borderStyle = 'border-sky-400 ring-2 ring-sky-400/30';
 
                   return (
                     <div
@@ -91,63 +113,63 @@ export const MobileTrackTree: React.FC<MobileTrackTreeProps> = ({
                       onClick={() => {
                         if (!isLocked) onSelectNode(node);
                       }}
-                      className={`p-3 border rounded-xs transition-all ${borderStyle} ${
+                      className={`p-3.5 rounded-xl border transition-all ${borderStyle} ${
                         isLocked
-                          ? 'bg-[#0f1117]/40 opacity-50 cursor-not-allowed'
-                          : 'bg-[#12141a] hover:bg-[#181b22] cursor-pointer'
+                          ? 'bg-[#0b0d13]/50 opacity-50 cursor-not-allowed'
+                          : 'bg-[#121622] hover:bg-[#181d2a] cursor-pointer'
                       }`}
                     >
-                      <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start justify-between gap-3">
                         <div>
-                          <span className="text-[10px] font-mono text-slate-400 uppercase">
+                          <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
                             {node.category.replace('_', ' ')}
                           </span>
                           <h4 className="text-sm font-semibold text-white mt-0.5 leading-snug">
                             {node.title}
                           </h4>
-                          <p className="text-xs text-slate-400 mt-1 line-clamp-2">
+                          <p className="text-xs text-slate-300 mt-1 line-clamp-2 leading-relaxed">
                             {node.graphicApplication}
                           </p>
                         </div>
 
                         {/* Status Icon */}
-                        <div className="shrink-0 pt-1">
+                        <div className="shrink-0 pt-0.5">
                           {isLocked && <Lock className="w-4 h-4 text-slate-600" />}
                           {progress.status === 'available' && (
-                            <Sparkles className="w-4 h-4 text-[#00f0ff]" />
+                            <Sparkles className="w-4 h-4 text-sky-400" />
                           )}
                           {progress.status === 'critical_decay' && (
-                            <AlertOctagon className="w-4 h-4 text-[#ffb000] animate-pulse" />
+                            <AlertTriangle className="w-4 h-4 text-amber-400 animate-pulse" />
                           )}
                           {progress.status === 'mastered' && (
-                            <CheckCircle2 className="w-4 h-4 text-[#00f0ff]" />
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                           )}
                         </div>
                       </div>
 
                       {/* Score Telemetry */}
                       {!isLocked && (
-                        <div className="mt-3 grid grid-cols-2 gap-3 pt-2 border-t border-[#242933] font-mono text-[11px]">
+                        <div className="mt-3 grid grid-cols-2 gap-3 pt-2.5 border-t border-white/5 font-mono text-[11px]">
                           <div>
-                            <div className="flex justify-between text-slate-400">
-                              <span>MAT</span>
-                              <span className="text-[#00f0ff]">{progress.scoreKnowledge}/90</span>
+                            <div className="flex justify-between text-slate-400 mb-1">
+                              <span>MATEMÁTICA</span>
+                              <span className="text-sky-300 font-bold">{progress.scoreKnowledge}/90</span>
                             </div>
-                            <div className="w-full h-1 bg-[#181b22] mt-1">
+                            <div className="w-full h-1.5 rounded-full bg-black/40 overflow-hidden">
                               <div
-                                className="h-full bg-[#00f0ff]"
+                                className="h-full rounded-full bg-sky-400"
                                 style={{ width: `${(progress.scoreKnowledge / 90) * 100}%` }}
                               />
                             </div>
                           </div>
                           <div>
-                            <div className="flex justify-between text-slate-400">
-                              <span>3D</span>
-                              <span className="text-[#ffb000]">{progress.score3D}/10</span>
+                            <div className="flex justify-between text-slate-400 mb-1">
+                              <span>SHADERS 3D</span>
+                              <span className="text-amber-400 font-bold">{progress.score3D}/10</span>
                             </div>
-                            <div className="w-full h-1 bg-[#181b22] mt-1">
+                            <div className="w-full h-1.5 rounded-full bg-black/40 overflow-hidden">
                               <div
-                                className="h-full bg-[#ffb000]"
+                                className="h-full rounded-full bg-amber-400"
                                 style={{ width: `${(progress.score3D / 10) * 100}%` }}
                               />
                             </div>

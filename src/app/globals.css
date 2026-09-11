@@ -2,51 +2,184 @@
 
 @layer base {
   :root {
-    --vulkan-void: #0a0b0e;
-    --vulkan-surface: #12141a;
-    --vulkan-panel: #181b22;
-    --vulkan-border: #242933;
-    --vulkan-amber: #ffb000;
-    --vulkan-cyan: #00f0ff;
-    --vulkan-red: #ff3344;
-    --vulkan-emerald: #10b981;
+    /* Refined Dark Theme System (Linear + Radix Slate + Vercel Geist) */
+    --color-canvas: #090b10;
+    --color-surface: #0f121a;
+    --color-surface-elevated: #151923;
+    --color-surface-hover: #1c2230;
+    
+    --color-border-subtle: rgba(255, 255, 255, 0.07);
+    --color-border-default: rgba(255, 255, 255, 0.12);
+    --color-border-strong: rgba(255, 255, 255, 0.20);
+
+    /* Dopaminergic Eye-Friendly Accent Palette (No Neon Glare) */
+    --color-accent-sky: #38bdf8;
+    --color-accent-sky-soft: rgba(56, 189, 248, 0.12);
+    --color-accent-emerald: #10b981;
+    --color-accent-emerald-soft: rgba(16, 185, 129, 0.12);
+    --color-accent-amber: #f59e0b;
+    --color-accent-amber-soft: rgba(245, 158, 11, 0.12);
+    --color-accent-rose: #f43f5e;
+    --color-accent-rose-soft: rgba(244, 63, 94, 0.12);
+    --color-accent-violet: #a855f7;
+    --color-accent-violet-soft: rgba(168, 85, 247, 0.12);
+
+    /* Text Hierarchy */
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
   }
 
   body {
-    background-color: var(--vulkan-void);
-    color: #e2e8f0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--color-canvas);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", Helvetica, Arial, sans-serif;
     overflow-x: hidden;
     margin: 0;
     padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-/* Custom scrollbars for high-density HUD */
+/* Ergonomic Scrollbars */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0b0e;
+  background: var(--color-canvas);
 }
 ::-webkit-scrollbar-thumb {
-  background: #242933;
-  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #00f0ff;
+  background: rgba(56, 189, 248, 0.4);
 }
 
-/* Vulkan Machined Grid Background */
-.vulkan-grid {
-  background-image: 
-    linear-gradient(to right, rgba(36, 41, 51, 0.3) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(36, 41, 51, 0.3) 1px, transparent 1px);
-  background-size: 32px 32px;
+/* Subtle Ambient Dot/Grid Background */
+.ambient-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-/* Monospace font helpers */
+.subtle-mesh {
+  background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.05) 0%, transparent 50%),
+              radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.03) 0%, transparent 40%);
+}
+
+/* Monospace font helpers for telemetry */
 .font-mono-code {
-  font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+  font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", "Fira Code", Menlo, Monaco, Consolas, monospace;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Tactile 3D Buttons (Duolingo Tactile Micro-Interactions) */
+.tactile-btn {
+  position: relative;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  transition: transform 0.08s ease-out, box-shadow 0.08s ease-out;
+  cursor: pointer;
+  user-select: none;
+}
+.tactile-btn:active {
+  transform: translateY(3px);
+}
+
+.tactile-btn-sky {
+  background-color: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 4px 0 #0369a1, 0 6px 12px rgba(2, 132, 199, 0.25);
+}
+.tactile-btn-sky:hover {
+  background-color: #0369a1;
+}
+.tactile-btn-sky:active {
+  box-shadow: 0 1px 0 #0369a1;
+}
+
+.tactile-btn-emerald {
+  background-color: #059669;
+  color: #ffffff;
+  box-shadow: 0 4px 0 #047857, 0 6px 12px rgba(5, 150, 105, 0.25);
+}
+.tactile-btn-emerald:hover {
+  background-color: #047857;
+}
+.tactile-btn-emerald:active {
+  box-shadow: 0 1px 0 #047857;
+}
+
+.tactile-btn-amber {
+  background-color: #d97706;
+  color: #ffffff;
+  box-shadow: 0 4px 0 #b45309, 0 6px 12px rgba(217, 119, 6, 0.25);
+}
+.tactile-btn-amber:hover {
+  background-color: #b45309;
+}
+.tactile-btn-amber:active {
+  box-shadow: 0 1px 0 #b45309;
+}
+
+.tactile-btn-neutral {
+  background-color: #1e2433;
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 3px 0 #131722;
+}
+.tactile-btn-neutral:hover {
+  background-color: #262d40;
+  color: #ffffff;
+}
+.tactile-btn-neutral:active {
+  box-shadow: 0 1px 0 #131722;
+}
+
+/* Tactile 3D Duolingo Node Stone */
+.duo-stone {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease-out;
+  user-select: none;
+}
+.duo-stone:hover {
+  transform: translateY(-2px) scale(1.04);
+}
+.duo-stone:active {
+  transform: translateY(3px) scale(0.97);
+}
+
+/* Sinuous SVG Trail Pulse */
+@keyframes pulse-dash {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -28;
+  }
+}
+
+.animate-trail-flow {
+  animation: pulse-dash 1.2s linear infinite;
+}
+
+/* Floating animation for active lesson indicator */
+@keyframes float-indicator {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-float {
+  animation: float-indicator 2.2s ease-in-out infinite;
 }

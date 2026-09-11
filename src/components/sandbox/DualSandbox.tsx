@@ -5,13 +5,12 @@ import dynamic from 'next/dynamic';
 import { ShaderCanvas } from './ShaderCanvas';
 import { Play, RotateCcw, AlertTriangle, Code, Box } from 'lucide-react';
 
-// Lazy-loaded Three.js component via code-splitting
 const ParametricScene3D = dynamic(
   () => import('./ParametricScene3D').then((m) => m.ParametricScene3D),
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-full flex items-center justify-center bg-[#0a0b0e] text-[#00f0ff] font-mono text-xs">
+      <div className="w-full h-full flex items-center justify-center bg-[#090b10] text-sky-400 font-mono text-xs">
         INITIALIZING 3D ENGINE...
       </div>
     ),
@@ -46,31 +45,31 @@ export const DualSandbox: React.FC<DualSandboxProps> = ({
   };
 
   return (
-    <div className={`flex flex-col h-full bg-[#12141a] border border-[#242933] ${className}`}>
+    <div className={`flex flex-col h-full bg-[#0f121a] overflow-hidden select-none ${className}`}>
       {/* Sandbox Header / Mode Selector */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-[#242933] bg-[#0a0b0e]">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10 bg-[#0b0e15]">
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => setActiveTab('shader')}
-            className={`flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
               activeTab === 'shader'
-                ? 'bg-[#181b22] text-[#00f0ff] border-b-2 border-[#00f0ff]'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30 font-bold'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
             }`}
           >
-            <Code className="w-3.5 h-3.5" />
-            GLSL FRAGMENT RUNNER (WEBGL 2.0)
+            <Code className="w-3.5 h-3.5 text-sky-400" />
+            <span>GLSL SHADER (WEBGL 2.0)</span>
           </button>
           <button
             onClick={() => setActiveTab('3d')}
-            className={`flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-medium transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
               activeTab === '3d'
-                ? 'bg-[#181b22] text-[#ffb000] border-b-2 border-[#ffb000]'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
             }`}
           >
-            <Box className="w-3.5 h-3.5" />
-            PARAMETRIC 3D SCENE
+            <Box className="w-3.5 h-3.5 text-amber-400" />
+            <span>CENA 3D PARAMÉTRICA</span>
           </button>
         </div>
 
@@ -81,21 +80,21 @@ export const DualSandbox: React.FC<DualSandboxProps> = ({
               <button
                 onClick={handleReset}
                 title="Reset Code"
-                className="p-1.5 text-slate-400 hover:text-white border border-[#242933] hover:bg-[#181b22] transition-colors cursor-pointer"
+                className="p-2 text-slate-400 hover:text-white rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={handleRun}
-                className="flex items-center gap-1 px-3 py-1 bg-[#00f0ff] hover:bg-[#38bdf8] text-black font-mono font-bold text-xs transition-colors cursor-pointer"
+                className="tactile-btn tactile-btn-sky px-3.5 py-1.5 text-xs font-mono flex items-center gap-1.5"
               >
-                <Play className="w-3.5 h-3.5 fill-black" />
-                COMPILE & EXECUTE
+                <Play className="w-3 h-3 fill-white" />
+                <span>COMPILAR</span>
               </button>
             </>
           ) : (
-            <span className="text-[10px] font-mono text-[#ffb000] px-2 py-0.5 bg-[#ffb000]/10 border border-[#ffb000]/30 hidden sm:inline">
-              VIEWPORT 3D EXPANDIDO (THREE.JS)
+            <span className="text-[10px] font-mono text-amber-300 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 hidden sm:inline font-bold">
+              THREE.JS VIEWPORT
             </span>
           )}
         </div>
@@ -109,7 +108,7 @@ export const DualSandbox: React.FC<DualSandboxProps> = ({
       ) : (
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 min-h-0">
           {/* Left/Top: Interactive Viewport */}
-          <div className="relative w-full h-[320px] lg:h-full border-b lg:border-b-0 lg:border-r border-[#242933]">
+          <div className="relative w-full h-[320px] lg:h-full border-b lg:border-b-0 lg:border-r border-white/10 bg-[#090b10]">
             <ShaderCanvas
               fragmentSource={compiledCode}
               onError={(err) => setCompilerError(err)}
@@ -117,13 +116,13 @@ export const DualSandbox: React.FC<DualSandboxProps> = ({
           </div>
 
           {/* Right/Bottom: Code Editor & Error Diagnostic Terminal */}
-          <div className="flex flex-col h-full bg-[#0a0b0e]">
-            <div className="flex items-center justify-between px-3 py-1.5 bg-[#12141a] border-b border-[#242933] text-xs font-mono text-slate-400">
-              <span>GLSL ES 3.0 FRAGMENT SOURCE</span>
-              <span className="text-[10px] text-slate-500">Ctrl+Enter to compile</span>
+          <div className="flex flex-col h-full bg-[#090b10]">
+            <div className="flex items-center justify-between px-3.5 py-2 bg-[#0d1017] border-b border-white/10 text-xs font-mono text-slate-400">
+              <span className="text-[11px] font-bold">GLSL ES 3.0 FRAGMENT SOURCE</span>
+              <span className="text-[10px] text-slate-500">Ctrl+Enter para compilar</span>
             </div>
 
-            <div className="flex-1 p-2 overflow-auto">
+            <div className="flex-1 p-3 overflow-auto select-text">
               <textarea
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
@@ -134,15 +133,15 @@ export const DualSandbox: React.FC<DualSandboxProps> = ({
                   }
                 }}
                 spellCheck={false}
-                className="w-full h-full bg-transparent text-[#00f0ff] font-mono-code text-xs resize-none outline-hidden leading-relaxed"
+                className="w-full h-full bg-transparent text-sky-300 font-mono-code text-xs resize-none outline-hidden leading-relaxed"
               />
             </div>
 
             {/* Compiler Diagnostics Bar */}
             {compilerError && (
-              <div className="p-2.5 bg-[#ff3344]/10 border-t border-[#ff3344] text-[#ff3344] font-mono text-xs flex items-start gap-2">
-                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                <pre className="whitespace-pre-wrap overflow-x-auto">{compilerError}</pre>
+              <div className="p-3 bg-rose-950/20 border-t border-rose-500/40 text-rose-300 font-mono text-xs flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
+                <pre className="whitespace-pre-wrap overflow-x-auto text-[11px]">{compilerError}</pre>
               </div>
             )}
           </div>

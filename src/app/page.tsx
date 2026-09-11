@@ -13,10 +13,12 @@ import { SubModuleNavigator } from '@/components/study/SubModuleNavigator';
 import { CurriculumNode } from '@/types/curriculum';
 import { LessonAndAssessmentResponse } from '@/types/ai-contract';
 import { getOfflineAssessment } from '@/core/ai/offline-bank';
-import { X, Code, BookOpen, GraduationCap, Maximize2, Minimize2 } from 'lucide-react';
+import { CelebrationOverlay } from '@/components/gamification/CelebrationOverlay';
+import { playTactileClick } from '@/lib/audio-feedback';
+import { X, Code, BookOpen, GraduationCap, Maximize2, Minimize2, Loader2 } from 'lucide-react';
 
 export default function Home() {
-  const { nodes, progressMap, initializeData, isLoading } = useAppStore();
+  const { nodes, progressMap, initializeData, isLoading, activeCelebration, dismissCelebration } = useAppStore();
   const [selectedNode, setSelectedNode] = useState<CurriculumNode | null>(null);
   const [activeSubModuleId, setActiveSubModuleId] = useState<string | null>(null);
   const [panelMode, setPanelMode] = useState<'article' | 'exercise' | 'sandbox'>('article');
@@ -34,15 +36,19 @@ export default function Home() {
   const currentSubmodules = currentNode?.submodules || [];
   const activeSubModule = currentSubmodules.find((s) => s.id === activeSubModuleId) || currentSubmodules[0];
 
-  const handleSelectNode = (node: CurriculumNode) => {
+  const handleSelectNode = (
+    node: CurriculumNode,
+    initialMode: 'article' | 'exercise' | 'sandbox' = 'article'
+  ) => {
     setSelectedNode(node);
     const subs = node.submodules || [];
     setActiveSubModuleId(subs[0]?.id || null);
     setCurrentAssessment(getOfflineAssessment(node.id));
-    setPanelMode('article');
+    setPanelMode(initialMode);
   };
 
   const toggleFocusMode = () => {
+    playTactileClick();
     setIsFocusMode((prev) => {
       const next = !prev;
       if (next && !selectedNode && nodes.length > 0) {
@@ -54,15 +60,15 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center bg-[#0a0b0e] text-white font-mono gap-3">
-        <div className="w-8 h-8 border-2 border-[#00f0ff] border-t-transparent animate-spin" />
-        <span className="text-xs text-[#00f0ff] tracking-widest">CARREGANDO TELEMETRIA FSRS...</span>
+      <div className="flex-1 flex flex-col items-center justify-center bg-[#090b10] text-slate-100 font-mono gap-4">
+        <Loader2 className="w-8 h-8 text-sky-400 animate-spin" />
+        <span className="text-xs text-sky-300 tracking-widest uppercase">CARREGANDO TELEMETRIA FSRS...</span>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col h-screen overflow-hidden bg-[#0a0b0e]">
+    <div className="flex-1 flex flex-col h-screen overflow-hidden bg-[#090b10]">
       {/* HUD Header */}
       <TelemetryHeader
         isFocusMode={isFocusMode}
@@ -94,72 +100,81 @@ export default function Home() {
         {/* Right Side: Study & Practice Panel */}
         {currentNode && (
           <aside
-            className={`h-full z-30 flex flex-col bg-[#12141a] border-l border-[#242933] shadow-2xl transition-all ${
+            className={`h-full z-30 flex flex-col bg-[#0f121a] border-l border-white/10 shadow-2xl transition-all ${
               isFocusMode
                 ? 'flex-1 min-w-0'
                 : 'absolute lg:relative right-0 top-0 w-full lg:w-[680px] xl:w-[760px]'
             }`}
           >
             {/* Drawer Header Controls */}
-            <div className="flex items-center justify-between px-3 py-2 bg-[#0a0b0e] border-b border-[#242933]">
+            <div className="flex items-center justify-between px-4 py-2.5 bg-[#0b0e15] border-b border-white/10 select-none">
               {/* Navigation Tabs */}
-              <div className="flex items-center gap-1 font-mono text-xs overflow-x-auto">
+              <div className="flex items-center gap-1.5 font-mono text-xs overflow-x-auto">
                 <button
-                  onClick={() => setPanelMode('article')}
-                  className={`flex items-center gap-1.5 px-3 py-1 transition-colors cursor-pointer shrink-0 ${
+                  onClick={() => {
+                    playTactileClick();
+                    setPanelMode('article');
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer shrink-0 ${
                     panelMode === 'article'
-                      ? 'bg-[#181b22] text-[#00f0ff] border-b-2 border-[#00f0ff] font-bold'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40 font-bold shadow-sm'
+                      : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <GraduationCap className="w-3.5 h-3.5" />
-                  AULA DO PROFESSOR
+                  <GraduationCap className="w-3.5 h-3.5 text-sky-400" />
+                  <span>AULA</span>
                 </button>
 
                 <button
-                  onClick={() => setPanelMode('exercise')}
-                  className={`flex items-center gap-1.5 px-3 py-1 transition-colors cursor-pointer shrink-0 ${
+                  onClick={() => {
+                    playTactileClick();
+                    setPanelMode('exercise');
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer shrink-0 ${
                     panelMode === 'exercise'
-                      ? 'bg-[#181b22] text-[#ffb000] border-b-2 border-[#ffb000] font-bold'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold shadow-sm'
+                      : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <BookOpen className="w-3.5 h-3.5" />
-                  EXERCÍCIO & TESTE
+                  <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+                  <span>EXERCÍCIO</span>
                 </button>
 
                 <button
-                  onClick={() => setPanelMode('sandbox')}
-                  className={`flex items-center gap-1.5 px-3 py-1 transition-colors cursor-pointer shrink-0 ${
+                  onClick={() => {
+                    playTactileClick();
+                    setPanelMode('sandbox');
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer shrink-0 ${
                     panelMode === 'sandbox'
-                      ? 'bg-[#181b22] text-[#10b981] border-b-2 border-[#10b981] font-bold'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold shadow-sm'
+                      : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <Code className="w-3.5 h-3.5" />
-                  SANDBOX 3D
+                  <Code className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>SANDBOX 3D</span>
                 </button>
               </div>
 
               {/* Action Buttons: Focus Mode Toggle & Close */}
-              <div className="flex items-center gap-1 shrink-0 ml-2">
+              <div className="flex items-center gap-1.5 shrink-0 ml-2">
                 <button
                   onClick={toggleFocusMode}
-                  className={`flex items-center gap-1 px-2 py-1 border text-xs font-mono transition-colors cursor-pointer ${
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-mono transition-all cursor-pointer ${
                     isFocusMode
-                      ? 'bg-[#ffb000]/15 text-[#ffb000] border-[#ffb000]/40'
-                      : 'bg-[#181b22] text-slate-400 hover:text-white border-[#242933]'
+                      ? 'bg-amber-500/15 text-amber-300 border-amber-500/40 font-bold'
+                      : 'bg-white/5 text-slate-300 hover:text-white border-white/10 hover:bg-white/10'
                   }`}
                   title={isFocusMode ? 'Restaurar visualização padrão' : 'Expandir painel (Modo Foco)'}
                 >
                   {isFocusMode ? (
                     <>
-                      <Minimize2 className="w-3.5 h-3.5" />
+                      <Minimize2 className="w-3.5 h-3.5 text-amber-400" />
                       <span className="hidden sm:inline">SAIR DO FOCO</span>
                     </>
                   ) : (
                     <>
-                      <Maximize2 className="w-3.5 h-3.5" />
+                      <Maximize2 className="w-3.5 h-3.5 text-slate-400" />
                       <span className="hidden sm:inline">MODO FOCO</span>
                     </>
                   )}
@@ -167,10 +182,11 @@ export default function Home() {
 
                 <button
                   onClick={() => {
+                    playTactileClick();
                     setSelectedNode(null);
                     if (isFocusMode) setIsFocusMode(false);
                   }}
-                  className="p-1 text-slate-400 hover:text-white border border-[#242933] hover:bg-[#181b22] transition-colors cursor-pointer"
+                  className="p-1.5 text-slate-400 hover:text-white rounded-lg border border-white/10 hover:bg-white/10 transition-colors cursor-pointer"
                   title="Fechar painel"
                 >
                   <X className="w-4 h-4" />
@@ -212,6 +228,7 @@ export default function Home() {
                   activeSubModule={activeSubModule}
                   onOpenSandbox={() => setPanelMode('sandbox')}
                   onOpenArticle={() => setPanelMode('article')}
+                  onSelectSubModule={(subId) => setActiveSubModuleId(subId)}
                 />
               ) : (
                 <DualSandbox
@@ -243,6 +260,12 @@ export default function Home() {
           }}
         />
       )}
+
+      {/* Dopaminergic Math Milestone Celebration Overlay */}
+      <CelebrationOverlay
+        event={activeCelebration}
+        onDismiss={dismissCelebration}
+      />
     </div>
   );
 }

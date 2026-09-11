@@ -5,6 +5,15 @@ import { CurriculumNode, UserNodeProgress, ProficiencyLevel, ResponseSpeed } fro
 import { FSRSCard } from '@/types/fsrs';
 import { fsrs } from '@/core/fsrs/fsrs';
 import { GoogleUserProfile } from './oauth';
+import { CelebrationEvent } from '@/components/gamification/CelebrationOverlay';
+
+export function calculateFocusMultiplier(streak: number): number {
+  if (streak >= 20) return 2.5;
+  if (streak >= 10) return 2.0;
+  if (streak >= 5) return 1.5;
+  if (streak >= 3) return 1.2;
+  return 1.0;
+}
 
 interface AppStore {
   nodes: CurriculumNode[];
@@ -12,6 +21,14 @@ interface AppStore {
   fsrsMap: Record<string, FSRSCard>;
   activeNodeId: string | null;
   isLoading: boolean;
+
+  // Gamification & Dopamine State
+  currentStreak: number;
+  bestStreak: number;
+  focusMultiplier: number;
+  activeCelebration: CelebrationEvent | null;
+  triggerCelebration: (event: CelebrationEvent) => void;
+  dismissCelebration: () => void;
 
   // OAuth 2.0 State
   oauthToken: string | null;
@@ -52,6 +69,13 @@ export const useAppStore = create<AppStore>((set, get) => ({
   fsrsMap: {},
   activeNodeId: null,
   isLoading: true,
+
+  currentStreak: 0,
+  bestStreak: 0,
+  focusMultiplier: 1.0,
+  activeCelebration: null,
+  triggerCelebration: (event) => set({ activeCelebration: event }),
+  dismissCelebration: () => set({ activeCelebration: null }),
 
   oauthToken: null,
   oauthExpiresAt: null,
@@ -140,10 +164,36 @@ export const useAppStore = create<AppStore>((set, get) => ({
         });
       }
 
+      // Calculate streak from previous attempts
+      const allAttempts = await db.attempts.toArray();
+      let streak = 0;
+      let best = 0;
+      let currentRun = 0;
+      for (const att of allAttempts) {
+        if (att.isCorrect) {
+          currentRun++;
+          if (currentRun > best) best = currentRun;
+        } else {
+          currentRun = 0;
+        }
+      }
+      for (let i = allAttempts.length - 1; i >= 0; i--) {
+        if (allAttempts[i].isCorrect) {
+          streak++;
+        } else {
+          break;
+        }
+      }
+      const focusMultiplier = calculateFocusMultiplier(streak);
+
       set({
         nodes: currentNodes,
         progressMap,
         fsrsMap,
+        currentStreak: streak,
+        bestStreak: best,
+        focusMultiplier,
+        activeCelebration: null,
         oauthToken: tokenVal,
         oauthExpiresAt: expiryVal,
         oauthClientId: clientIdVal,
@@ -241,11 +291,16 @@ export const useAppStore = create<AppStore>((set, get) => ({
     isCorrect,
     diagnosticLogged,
   }) => {
-    const { progressMap, fsrsMap, nodes } = get();
+    const { progressMap, fsrsMap, nodes, currentStreak, bestStreak } = get();
     const currentProgress = progressMap[nodeId];
     const currentCard = fsrsMap[nodeId] || fsrs.createInitialCard(nodeId);
 
     if (!currentProgress) return;
+
+    // Gamification Streak & Focus Multiplier Update
+    const newStreak = isCorrect ? currentStreak + 1 : 0;
+    const newBestStreak = Math.max(bestStreak, newStreak);
+    const newMultiplier = calculateFocusMultiplier(newStreak);
 
     // FSRS Rating determinístico
     const rating = fsrs.scoreToRating(scoreKnowledge, timeSpentSeconds, timeLimitSeconds);
@@ -278,14 +333,97 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
     // Submodule progress tracking
     const subMap = currentProgress.submoduleProgressMap || {};
+    let isSubmoduleNewlyCompleted = false;
     if (subModuleId) {
       const existingSub = subMap[subModuleId];
+      const newlyCompleted = isCorrect && scoreKnowledge >= 85 && (!existingSub || !existingSub.isCompleted);
+      if (newlyCompleted) {
+        isSubmoduleNewlyCompleted = true;
+      }
       subMap[subModuleId] = {
         subModuleId,
-        isCompleted: isCorrect && scoreKnowledge >= 85,
+        isCompleted: Boolean(existingSub?.isCompleted || (isCorrect && scoreKnowledge >= 85)),
         scoreKnowledge: Math.max(existingSub?.scoreKnowledge || 0, scoreKnowledge),
         score3D: Math.max(existingSub?.score3D || 0, score3D),
         attempts: (existingSub?.attempts || 0) + 1,
+      };
+    }
+
+    // Check celebration conditions
+    let pendingCelebration: CelebrationEvent | null = null;
+    const wasMasteredBefore = currentProgress.status === 'mastered';
+    const wasDecayedBefore = currentProgress.status === 'critical_decay';
+
+    const PROFICIENCY_RANK: Record<ProficiencyLevel, number> = {
+      'Inicial': 0,
+      'Moderado': 1,
+      'Alto': 2,
+      'Altíssimo': 3,
+    };
+    const didLevelUpProficiency =
+      PROFICIENCY_RANK[proficiencyLevel] > PROFICIENCY_RANK[currentProgress.proficiencyLevel];
+
+    if (isMastered && !wasMasteredBefore) {
+      const nodeObj = nodes.find((n) => n.id === nodeId);
+      pendingCelebration = {
+        id: `mastery-${nodeId}-${Date.now()}`,
+        type: 'mastery',
+        title: 'DOMÍNIO ESPACIAL ALCANÇADO!',
+        subtitle: `Você dominou com louvor o nó "${nodeObj?.title || nodeId}". Conhecimento e Proficiência 3D no topo!`,
+        badgeText: 'NÓ CONCLUÍDO',
+        scoreKnowledge,
+        score3D,
+        streak: newStreak,
+        multiplier: newMultiplier,
+      };
+    } else if (isSubmoduleNewlyCompleted) {
+      pendingCelebration = {
+        id: `submodule-${subModuleId}-${Date.now()}`,
+        type: 'submodule_complete',
+        title: 'SUBMÓDULO CONCLUÍDO!',
+        subtitle: 'Você concluiu todos os critérios deste submódulo com alta precisão matemática e gráfica.',
+        badgeText: 'SUBMÓDULO OK',
+        scoreKnowledge,
+        score3D,
+        streak: newStreak,
+        multiplier: newMultiplier,
+      };
+    } else if (wasDecayedBefore && isCorrect) {
+      pendingCelebration = {
+        id: `fsrs-${nodeId}-${Date.now()}`,
+        type: 'fsrs_milestone',
+        title: 'MEMÓRIA FSRS RESTAURADA!',
+        subtitle: 'Decaimento crítico revertido com sucesso! Sua curva de retenção foi reestabilizada.',
+        badgeText: 'FSRS REFORÇADO',
+        scoreKnowledge,
+        score3D,
+        streak: newStreak,
+        multiplier: newMultiplier,
+      };
+    } else if (isCorrect && [3, 5, 10, 20, 30, 50].includes(newStreak)) {
+      pendingCelebration = {
+        id: `streak-${newStreak}-${Date.now()}`,
+        type: 'streak_milestone',
+        title: `COMBO ${newStreak}X EM CHAMAS!`,
+        subtitle: `Sequência impressionante de ${newStreak} acertos consecutivos! Multiplicador de foco elevado para ${newMultiplier.toFixed(1)}x.`,
+        badgeText: `MULTIPLICADOR ${newMultiplier.toFixed(1)}x`,
+        scoreKnowledge,
+        score3D,
+        streak: newStreak,
+        multiplier: newMultiplier,
+      };
+    } else if (didLevelUpProficiency) {
+      const nodeObj = nodes.find((n) => n.id === nodeId);
+      pendingCelebration = {
+        id: `level-up-${nodeId}-${Date.now()}`,
+        type: 'level_up',
+        title: `NÍVEL DE RETENÇÃO: ${proficiencyLevel.toUpperCase()}!`,
+        subtitle: `Sua proficiência em "${nodeObj?.title || nodeId}" avançou de ${currentProgress.proficiencyLevel} para ${proficiencyLevel}!`,
+        badgeText: `NÍVEL ${proficiencyLevel.toUpperCase()}`,
+        scoreKnowledge,
+        score3D,
+        streak: newStreak,
+        multiplier: newMultiplier,
       };
     }
 
@@ -341,6 +479,13 @@ export const useAppStore = create<AppStore>((set, get) => ({
       }
     }
 
-    set({ progressMap: newProgressMap, fsrsMap: newFsrsMap });
+    set({
+      progressMap: newProgressMap,
+      fsrsMap: newFsrsMap,
+      currentStreak: newStreak,
+      bestStreak: newBestStreak,
+      focusMultiplier: newMultiplier,
+      ...(pendingCelebration ? { activeCelebration: pendingCelebration } : {}),
+    });
   },
 }));

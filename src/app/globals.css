@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --vulkan-void: #0a0b0e;
+    --vulkan-surface: #12141a;
+    --vulkan-panel: #181b22;
+    --vulkan-border: #242933;
+    --vulkan-amber: #ffb000;
+    --vulkan-cyan: #00f0ff;
+    --vulkan-red: #ff3344;
+    --vulkan-emerald: #10b981;
+  }
+
+  body {
+    background-color: var(--vulkan-void);
+    color: #e2e8f0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* Custom scrollbars for high-density HUD */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0b0e;
+}
+::-webkit-scrollbar-thumb {
+  background: #242933;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00f0ff;
+}
+
+/* Vulkan Machined Grid Background */
+.vulkan-grid {
+  background-image: 
+    linear-gradient(to right, rgba(36, 41, 51, 0.3) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(36, 41, 51, 0.3) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Monospace font helpers */
+.font-mono-code {
+  font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+}
